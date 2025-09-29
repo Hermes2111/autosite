@@ -1,0 +1,106 @@
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #1a1a1a;
+    color: #e0e0e0;
+}
+
+header {
+    background-color: #e10600; /* F1 rood */
+    color: white;
+    padding: 40px;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+h1 {
+    font-size: 3em;
+    margin: 0;
+}
+
+main {
+    padding: 40px 20px;
+}
+
+#collectie-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    justify-content: center;
+    max-width: 1200px;
+    margin: auto;
+}
+
+.modelauto {
+    background-color: #2b2b2b;
+    color: #f0f0f0;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.modelauto:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.5);
+}
+
+.modelauto h3 {
+    margin-top: 0;
+    font-size: 1.5em;
+    color: #e10600;
+}
+
+.modelauto p {
+    margin: 5px 0;
+}
+
+.modelauto p strong {
+    color: #ffffff;
+}
+
+/* New CSS for image container and images */
+.afbeeldingen-container {
+    display: flex; /* Use flexbox to align images */
+    justify-content: center; /* Center the images horizontally */
+    align-items: center; /* Center the images vertically */
+    height: 200px; /* Set a fixed height for the container */
+    overflow: hidden; /* Hide any images that exceed the container height */
+    margin: 15px 0;
+}
+
+.afbeeldingen-container img {
+    max-width: 100%; /* Ensure the image doesn't exceed the container width */
+    max-height: 100%; /* Ensure the image doesn't exceed the container height */
+    object-fit: contain; /* Scale the image to fit within the container while maintaining its aspect ratio */
+    border-radius: 8px; /* Add a slight border-radius for a softer look */
+}
+
+.contact-button {
+    display: inline-block;
+    background-color: #e10600;
+    color: white;
+    padding: 12px 20px;
+    margin-top: 15px;
+    text-decoration: none;
+    border-radius: 6px;
+    text-transform: uppercase;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.contact-button:hover {
+    background-color: #ff3300;
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    background-color: #121212;
+    color: #888888;
+    margin-top: 30px;
+}

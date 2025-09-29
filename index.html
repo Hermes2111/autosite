@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F1 Modelauto Collectie | Professionele Verzameling</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <style>
+        :root {
+            --f1-red: #e10600;
+            --f1-black: #15151e;
+            --f1-dark-gray: #2b2b2b;
+            --f1-light-gray: #949498;
+            --f1-white: #ffffff;
+            --f1-silver: #e8e8e8;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
+            background-color: var(--f1-black);
+            color: var(--f1-white);
+            line-height: 1.6;
+        }
+        
+        /* Header Styles */
+        header {
+            background: linear-gradient(to right, var(--f1-black), var(--f1-red));
+            padding: 2rem 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23e10600' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+            opacity: 0.3;
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 800;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--f1-silver);
+            margin-bottom: 1.5rem;
+        }
+        
+        /* Navigation */
+        nav {
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--f1-white);
+            text-decoration: none;
+        }
+        
+        .logo span {
+            color: var(--f1-red);
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 2rem;
+        }
+        
+        .nav-links a {
+            color: var(--f1-white);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--f1-red);
+        }
+        
+        /* Search and Filter */
+        .filters {
+            background-color: var(--f1-dark-gray);
+            padding: 1.5rem 0;
+        }
+        
+        .filter-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: var(--f1-black);
+            border-radius: 4px;
+            padding: 0.5rem;
+            flex: 1;
+            max-width: 400px;
+        }
+        
+        .search-box input {
+            background: transparent;
+            border: none;
+            color: var(--f1-white);
+            padding: 0.5rem;
+            width: 100%;
+            outline: none;
+        }
+        
+        .filter-options {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .filter-select {
+            background: var(--f1-black);
+            color: var(--f1-white);
+            border: 1px solid var(--f1-light-gray);
+            padding: 0.5rem;
+            border-radius: 4px;
+            outline: none;
+        }
+        
+        /* Main Content */
+        main {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 20px;
+        }
+        
+        .collection-stats {
+            background: var(--f1-dark-gray);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--f1-red);
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--f1-light-gray);
+        }
+        
+        /* Grid Layout */
+        #collectie-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+        
+        .model-card {
+            background: var(--f1-dark-gray);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .model-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(225, 6, 0, 0.2);
+        }
+        
+        .card-image {
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .model-card:hover .card-image img {
+            transform: scale(1.05);
+        }
+        
+        .no-image {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #333;
+            color: var(--f1-light-gray);
+        }
+        
+        .image-count-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            color: var(--f1-white);
+            padding: 0.3rem 0.6rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        
+        .card-content {
+            padding: 1.5rem;
+        }
+        
+        .card-title {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--f1-white);
+        }
+        
+        .card-year {
+            color: var(--f1-red);
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: block;
+        }
+        
+        .card-details {
+            margin-bottom: 1rem;
+        }
+        
+        .card-detail {
+            display: flex;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .detail-label {
+            color: var(--f1-light-gray);
+            min-width: 80px;
+        }
+        
+        .detail-value {
+            color: var(--f1-white);
+            font-weight: 500;
+        }
+        
+        .card-price {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--f1-white);
+            margin: 1rem 0;
+            text-align: right;
+        }
+        
+        .card-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1.5rem;
+        }
+        
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border-radius: 4px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            border: none;
+            font-family: inherit;
+        }
+        
+        .btn-primary {
+            background: var(--f1-red);
+            color: var(--f1-white);
+        }
+        
+        .btn-primary:hover {
+            background: #ff2a23;
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: var(--f1-light-gray);
+            border: 1px solid var(--f1-light-gray);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--f1-white);
+        }
+        
+        /* Enhanced Image Gallery Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 1000;
+            overflow: auto;
+        }
+        
+        .modal-content {
+            position: relative;
+            margin: auto;
+            padding: 2rem;
+            width: 100%;
+            max-width: 1200px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .modal-title {
+            color: var(--f1-white);
+            font-size: 1.5rem;
+            margin: 0;
+        }
+        
+        .modal-counter {
+            color: var(--f1-light-gray);
+            font-size: 1rem;
+        }
+        
+        .close-modal {
+            color: var(--f1-white);
+            font-size: 2rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0.5rem;
+            transition: color 0.3s;
+        }
+        
+        .close-modal:hover {
+            color: var(--f1-red);
+        }
+        
+        .modal-main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            min-height: 400px;
+        }
+        
+        .modal-image {
+            max-width: 100%;
+            max-height: 60vh;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        
+        .nav-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            color: var(--f1-white);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .nav-button:hover {
+            background: var(--f1-red);
+            transform: translateY(-50%) scale(1.1);
+        }
+        
+        .nav-button:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            background: rgba(0, 0, 0, 0.3);
+        }
+        
+        .nav-button:disabled:hover {
+            transform: translateY(-50%) scale(1);
+            background: rgba(0, 0, 0, 0.3);
+        }
+        
+        .nav-prev {
+            left: 20px;
+        }
+        
+        .nav-next {
+            right: 20px;
+        }
+        
+        .modal-thumbnails {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            margin-top: 1rem;
+            padding: 1rem 0;
+            overflow-x: auto;
+            max-width: 100%;
+        }
+        
+        .modal-thumbnails::-webkit-scrollbar {
+            height: 6px;
+        }
+        
+        .modal-thumbnails::-webkit-scrollbar-track {
+            background: var(--f1-dark-gray);
+            border-radius: 3px;
+        }
+        
+        .modal-thumbnails::-webkit-scrollbar-thumb {
+            background: var(--f1-red);
+            border-radius: 3px;
+        }
+        
+        .thumbnail {
+            width: 80px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            opacity: 0.7;
+        }
+        
+        .thumbnail:hover {
+            opacity: 1;
+            transform: scale(1.05);
+        }
+        
+        .thumbnail.active {
+            border-color: var(--f1-red);
+            opacity: 1;
+            transform: scale(1.05);
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--f1-dark-gray);
+            padding: 3rem 0 1.5rem;
+            margin-top: 4rem;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        
+        .footer-section h3 {
+            color: var(--f1-white);
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+        
+        .footer-section h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 2px;
+            background: var(--f1-red);
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .footer-links a {
+            color: var(--f1-light-gray);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: var(--f1-red);
+        }
+        
+        .contact-info {
+            color: var(--f1-light-gray);
+        }
+        
+        .contact-info p {
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: var(--f1-black);
+            color: var(--f1-white);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+        
+        .social-links a:hover {
+            background: var(--f1-red);
+            transform: translateY(-3px);
+        }
+        
+        .copyright {
+            text-align: center;
+            color: var(--f1-light-gray);
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Loading Animation */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(225, 6, 0, 0.2);
+            border-radius: 50%;
+            border-top-color: var(--f1-red);
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .nav-links {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .nav-links li {
+                margin: 0 1rem;
+            }
+            
+            .filter-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .search-box {
+                max-width: 100%;
+            }
+            
+            .filter-options {
+                justify-content: center;
+            }
+            
+            #collectie-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .collection-stats {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+            
+            .modal-content {
+                padding: 1rem;
+            }
+            
+            .modal-image {
+                max-height: 50vh;
+            }
+            
+            .nav-button {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+            
+            .nav-prev {
+                left: 10px;
+            }
+            
+            .nav-next {
+                right: 10px;
+            }
+            
+            .thumbnail {
+                width: 60px;
+                height: 45px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>F1 Modelauto Collectie</h1>
+            <p class="subtitle">Een exclusieve verzameling Formule 1 memorabilia en modelauto's</p>
+        </div>
+    </header>
+
+    <nav>
+        <div class="nav-container">
+            <a href="#" class="logo">F1<span>Collectie</span></a>
+            <ul class="nav-links">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Collectie</a></li>
+                <li><a href="#">Over ons</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="filters">
+        <div class="filter-container">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="search-input" placeholder="Zoek in collectie...">
+            </div>
+            <div class="filter-options">
+                <select id="year-filter" class="filter-select">
+                    <option value="">Alle jaren</option>
+                </select>
+                <select id="scale-filter" class="filter-select">
+                    <option value="">Alle schalen</option>
+                    <option value="1:18">1:18</option>
+                    <option value="1:43">1:43</option>
+                    <option value="1:8">1:8</option>
+                </select>
+                <select id="sort-by" class="filter-select">
+                    <option value="year-desc">Jaar (nieuw-oud)</option>
+                    <option value="year-asc">Jaar (oud-nieuw)</option>
+                    <option value="price-desc">Prijs (hoog-laag)</option>
+                    <option value="price-asc">Prijs (laag-hoog)</option>
+                </select>
+            </div>
+        </div>
+    </section>
+
+    <main>
+        <div class="collection-stats">
+            <div class="stat-item">
+                <div class="stat-number" id="total-items">0</div>
+                <div class="stat-label">Totaal items</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="unique-years">0</div>
+                <div class="stat-label">Unieke jaren</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">€<span id="total-value">0</span></div>
+                <div class="stat-label">Totale waarde</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="with-images">0</div>
+                <div class="stat-label">Met afbeeldingen</div>
+            </div>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+        </div>
+
+        <div id="collectie-container"></div>
+    </main>
+
+    <!-- Enhanced Image Gallery Modal -->
+    <div class="modal" id="image-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modal-title">Model</h2>
+                <div class="modal-counter" id="modal-counter">1 / 1</div>
+                <button class="close-modal" id="close-modal">&times;</button>
+            </div>
+            <div class="modal-main">
+                <button class="nav-button nav-prev" id="nav-prev">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <img class="modal-image" id="modal-image" src="" alt="">
+                <button class="nav-button nav-next" id="nav-next">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+            <div class="modal-thumbnails" id="modal-thumbnails"></div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Over de collectie</h3>
+                <p>Een exclusieve verzameling Formule 1 modelauto's en memorabilia, zorgvuldig samengesteld over meerdere decennia.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Snelle links</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Collectie</a></li>
+                    <li><a href="#">Topstukken</a></li>
+                    <li><a href="#">Verkoopvoorwaarden</a></li>
+                    
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contactgegevens</h3>
+                <div class="contact-info">
+                    <p><i class="fas fa-envelope"></i> hermesvansteenbrugge1@gmail.com</p>
+                    <p><i class="fas fa-phone"></i> +32484321620</p>
+                    <p><i class="fas fa-map-marker-alt"></i> Avelgem, Belgium</p>
+                </div>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    
+                </div>
+            </div>
+        </div>
+       
+    </footer>
+
+    <script>
+        // Global variables
+        let allModels = [];
+        let filteredModels = [];
+        let currentImageIndex = 0;
+        let currentImages = [];
+        
+        // DOM elements
+        const collectionContainer = document.getElementById('collectie-container');
+        const loadingElement = document.getElementById('loading');
+        const searchInput = document.getElementById('search-input');
+        const yearFilter = document.getElementById('year-filter');
+        const scaleFilter = document.getElementById('scale-filter');
+        const sortBy = document.getElementById('sort-by');
+        
+        // Modal elements
+        const modal = document.getElementById('image-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalCounter = document.getElementById('modal-counter');
+        const modalImage = document.getElementById('modal-image');
+        const modalThumbnails = document.getElementById('modal-thumbnails');
+        const closeModal = document.getElementById('close-modal');
+        const navPrev = document.getElementById('nav-prev');
+        const navNext = document.getElementById('nav-next');
+        
+        // Statistics elements
+        const totalItemsElement = document.getElementById('total-items');
+        const uniqueYearsElement = document.getElementById('unique-years');
+        const totalValueElement = document.getElementById('total-value');
+        const withImagesElement = document.getElementById('with-images');
+        
+        // Load CSV data - using your original function
+        function laadCSV() {
+            Papa.parse("collection.csv", {
+                download: true,
+                header: true,
+                skipEmptyLines: true,
+                complete: function(result) {
+                    // Filter out invalid rows and process data
+                    allModels = result.data.filter(model => model.what && model.what !== 'what');
+                    processModels(allModels);
+                },
+                error: function(error) {
+                    console.error("Fout bij het laden van CSV:", error);
+                    loadingElement.innerHTML = "<p>Er is een fout opgetreden bij het laden van de collectie.</p>";
+                }
+            });
+        }
+        
+        // Process models data
+        function processModels(models) {
+            // Update statistics
+            updateStatistics(models);
+            
+            // Populate year filter
+            populateYearFilter(models);
+            
+            // Initial render using your toonModellen logic
+            filteredModels = [...models];
+            toonModellen(filteredModels);
+            
+            // Hide loading animation
+            loadingElement.style.display = 'none';
+        }
+        
+        // Enhanced version of your toonModellen function
+        function toonModellen(data) {
+            const container = document.getElementById('collectie-container');
+            container.innerHTML = "";
+            
+            if (data.length === 0) {
+                container.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 2rem;">
+                        <h3>Geen modellen gevonden</h3>
+                        <p>Probeer uw zoekcriteria aan te passen</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            data.forEach(model => {
+                // Skip rows that are missing the 'what' field or are duplicates of the header
+                if (!model.what || model.what === 'what') {
+                    return;
+                }
+                
+                const div = document.createElement('div');
+                div.classList.add('model-card');
+                
+                // Create image HTML with enhanced gallery features
+                let imageHtml = '';
+                let imageCount = 0;
+                
+                if (model.afbeeldingen && model.afbeeldingen.trim() !== '') {
+                    const afbeeldingen = model.afbeeldingen.split(',');
+                    const validImages = afbeeldingen.filter(pad => pad.trim() !== '');
+                    imageCount = validImages.length;
+                    
+                    if (validImages.length > 0) {
+                        const firstImage = validImages[0].trim();
+                        imageHtml = `
+                            <div class="card-image">
+                                <img src="${firstImage}" alt="${model.what}" loading="lazy">
+                                ${imageCount > 1 ? `<div class="image-count-badge"><i class="fas fa-images"></i> ${imageCount}</div>` : ''}
+                            </div>
+                        `;
+                    }
+                }
+                
+                if (!imageHtml) {
+                    imageHtml = `
+                        <div class="card-image">
+                            <div class="no-image">
+                                <i class="fas fa-image"></i>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                // Create details HTML
+                let detailsHtml = '';
+                if (model.scale) {
+                    detailsHtml += `
+                        <div class="card-detail">
+                            <span class="detail-label">Schaal:</span>
+                            <span class="detail-value">${model.scale}</span>
+                        </div>
+                    `;
+                }
+                
+                if (model.specs) {
+                    detailsHtml += `
+                        <div class="card-detail">
+                            <span class="detail-label">Specs:</span>
+                            <span class="detail-value">${model.specs}</span>
+                        </div>
+                    `;
+                }
+                
+                if (model.numbers) {
+                    detailsHtml += `
+                        <div class="card-detail">
+                            <span class="detail-label">Nummer:</span>
+                            <span class="detail-value">${model.numbers}</span>
+                        </div>
+                    `;
+                }
+                
+                // Price HTML
+                let priceHtml = '';
+                if (model.price) {
+                    priceHtml = `<div class="card-price">€${model.price}</div>`;
+                }
+                
+                // Actions HTML with enhanced gallery
+                let actionsHtml = '';
+                if (model.afbeeldingen && model.afbeeldingen.trim() !== '') {
+                    actionsHtml += `
+                        <button class="btn btn-secondary view-images" data-images="${model.afbeeldingen}" data-title="${model.what}">
+                            <i class="fas fa-images"></i> Bekijk foto's (${imageCount})
+                        </button>
+                    `;
+                }
+                
+                actionsHtml += `
+                    <a href="mailto:hermesvansteenbrugge1@gmail.com?subject=Vraag over ${model.what}" class="btn btn-primary">
+                        <i class="fas fa-envelope"></i> Contact
+                    </a>
+                `;
+                
+                div.innerHTML = `
+                    ${imageHtml}
+                    <div class="card-content">
+                        <h3 class="card-title">${model.what}</h3>
+                        <span class="card-year">${model.year || 'Onbekend jaar'}</span>
+                        <div class="card-details">
+                            ${detailsHtml}
+                        </div>
+                        ${priceHtml}
+                        <div class="card-actions">
+                            ${actionsHtml}
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(div);
+            });
+            
+            // Add event listeners to view image buttons
+            document.querySelectorAll('.view-images').forEach(button => {
+                button.addEventListener('click', function() {
+                    const imagesString = this.getAttribute('data-images');
+                    const title = this.getAttribute('data-title');
+                    const images = imagesString.split(',').map(img => img.trim()).filter(img => img !== '');
+                    openImageModal(images, title);
+                });
+            });
+        }
+        
+        // Update statistics
+        function updateStatistics(models) {
+            // Total items
+            totalItemsElement.textContent = models.length;
+            
+            // Unique years
+            const uniqueYears = new Set(models.map(model => model.year).filter(year => year));
+            uniqueYearsElement.textContent = uniqueYears.size;
+            
+            // Total value
+            const totalValue = models.reduce((sum, model) => {
+                const price = parseFloat(model.price) || 0;
+                return sum + price;
+            }, 0);
+            totalValueElement.textContent = totalValue.toFixed(2);
+            
+            // Items with images
+            const withImages = models.filter(model => model.afbeeldingen && model.afbeeldingen.trim() !== '').length;
+            withImagesElement.textContent = withImages;
+        }
+        
+        // Populate year filter dropdown
+        function populateYearFilter(models) {
+            const years = new Set();
+            
+            models.forEach(model => {
+                if (model.year && model.year.trim() !== '') {
+                    years.add(model.year);
+                }
+            });
+            
+            // Convert to array and sort descending
+            const sortedYears = Array.from(years).sort((a, b) => b - a);
+            
+            sortedYears.forEach(year => {
+                const option = document.createElement('option');
+                option.value = year;
+                option.textContent = year;
+                yearFilter.appendChild(option);
+            });
+        }
+        
+        // Filter models based on criteria
+        function filterModels() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const selectedYear = yearFilter.value;
+            const selectedScale = scaleFilter.value;
+            const sortValue = sortBy.value;
+            
+            filteredModels = allModels.filter(model => {
+                // Search filter
+                const matchesSearch = !searchTerm || 
+                    (model.what && model.what.toLowerCase().includes(searchTerm)) ||
+                    (model.specs && model.specs.toLowerCase().includes(searchTerm));
+                
+                // Year filter
+                const matchesYear = !selectedYear || model.year === selectedYear;
+                
+                // Scale filter
+                const matchesScale = !selectedScale || 
+                    (model.scale && model.scale.includes(selectedScale));
+                
+                return matchesSearch && matchesYear && matchesScale;
+            });
+            
+            // Sort models
+            sortModels(sortValue);
+            
+            // Update statistics
+            updateStatistics(filteredModels);
+            
+            // Re-render models
+            toonModellen(filteredModels);
+        }
+        
+        // Sort models based on selected option
+        function sortModels(sortValue) {
+            switch(sortValue) {
+                case 'year-desc':
+                    filteredModels.sort((a, b) => (b.year || 0) - (a.year || 0));
+                    break;
+                case 'year-asc':
+                    filteredModels.sort((a, b) => (a.year || 0) - (b.year || 0));
+                    break;
+                case 'price-desc':
+                    filteredModels.sort((a, b) => (parseFloat(b.price) || 0) - (parseFloat(a.price) || 0));
+                    break;
+                case 'price-asc':
+                    filteredModels.sort((a, b) => (parseFloat(a.price) || 0) - (parseFloat(b.price) || 0));
+                    break;
+                default:
+                    // Default sort by year descending
+                    filteredModels.sort((a, b) => (b.year || 0) - (a.year || 0));
+            }
+        }
+        
+        // Enhanced Image Gallery Modal Functions
+        function openImageModal(images, title) {
+            currentImages = images;
+            currentImageIndex = 0;
+            
+            modalTitle.textContent = title;
+            updateModalDisplay();
+            
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function updateModalDisplay() {
+            if (currentImages.length === 0) return;
+            
+            // Update main image
+            modalImage.src = currentImages[currentImageIndex];
+            modalImage.alt = modalTitle.textContent;
+            
+            // Update counter
+            modalCounter.textContent = `${currentImageIndex + 1} / ${currentImages.length}`;
+            
+            // Update navigation buttons
+            navPrev.disabled = currentImageIndex === 0;
+            navNext.disabled = currentImageIndex === currentImages.length - 1;
+            
+            // Update thumbnails
+            updateThumbnails();
+        }
+        
+        function updateThumbnails() {
+            modalThumbnails.innerHTML = '';
+            
+            if (currentImages.length <= 1) return;
+            
+            currentImages.forEach((imageSrc, index) => {
+                const thumbnail = document.createElement('img');
+                thumbnail.src = imageSrc;
+                thumbnail.classList.add('thumbnail');
+                thumbnail.addEventListener('click', () => {
+                    currentImageIndex = index;
+                    updateModalDisplay();
+                });
+                
+                if (index === currentImageIndex) {
+                    thumbnail.classList.add('active');
+                }
+                
+                modalThumbnails.appendChild(thumbnail);
+            });
+        }
+        
+        function nextImage() {
+            if (currentImageIndex < currentImages.length - 1) {
+                currentImageIndex++;
+                updateModalDisplay();
+            }
+        }
+        
+        function prevImage() {
+            if (currentImageIndex > 0) {
+                currentImageIndex--;
+                updateModalDisplay();
+            }
+        }
+        
+        function closeImageModal() {
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+            currentImages = [];
+            currentImageIndex = 0;
+        }
+        
+        // Event listeners
+        searchInput.addEventListener('input', filterModels);
+        yearFilter.addEventListener('change', filterModels);
+        scaleFilter.addEventListener('change', filterModels);
+        sortBy.addEventListener('change', filterModels);
+        
+        // Modal event listeners
+        closeModal.addEventListener('click', closeImageModal);
+        navPrev.addEventListener('click', prevImage);
+        navNext.addEventListener('click', nextImage);
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (modal.style.display === 'block') {
+                switch(e.key) {
+                    case 'Escape':
+                        closeImageModal();
+                        break;
+                    case 'ArrowLeft':
+                        prevImage();
+                        break;
+                    case 'ArrowRight':
+                        nextImage();
+                        break;
+                }
+            }
+        });
+        
+        // Close modal when clicking outside content
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeImageModal();
+            }
+        });
+        
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            laadCSV();
+        });
+        
+        // Also initialize on window load (fallback)
+        window.onload = function() {
+            if (allModels.length === 0) {
+                laadCSV();
+            }
+        };
+    </script>
+</body>
+</html>
