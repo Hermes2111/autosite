@@ -1,0 +1,21 @@
+
+# Backend
+backend/node_modules/
+backend/.env
+backend/.env.local
+backend/dist/
+
+# Node
+node_modules/
+
+# Python virtualenvs
+.venv/
+venv/
+
+# OS / tooling noise
+.DS_Store
+Thumbs.db
+
+# Nested repositories we don't want to absorb
+f1-collection-api/.git/
+
