@@ -1,0 +1,15 @@
+{
+  "dependencies": {
+    "@faker-js/faker": "^10.0.0",
+    "@nestjs/config": "^4.0.2",
+    "@nestjs/mapped-types": "*",
+    "@nestjs/typeorm": "^11.0.0",
+    "jest": "^30.2.0",
+    "pg": "^8.16.3",
+    "typeorm": "^0.3.27"
+  },
+  "devDependencies": {
+    "ts-node": "^10.9.2",
+    "typeorm-ts-node-esm": "^0.3.20"
+  }
+}

@@ -1,0 +1,38 @@
+version: '3.9'
+services:
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: autosite
+      POSTGRES_USER: devusr
+      POSTGRES_PASSWORD: devpwd
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+
+  api:
+    build:
+      context: ./backend
+      target: dev
+    env_file:
+      - ./backend/.env
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: devusr
+      DB_PASSWORD: devpwd
+      DB_NAME: autosite
+      PORT: 3000
+    depends_on:
+      - db
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+
+volumes:
+  pg_data: {}
+
