@@ -68,19 +68,29 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Dashboard toggle button handler
   document.addEventListener('click', (e) => {
-    if (e.target.closest('#dashboard-toggle')) {
+    const dashboardBtn = e.target.closest('#dashboard-toggle');
+    if (dashboardBtn) {
+      e.preventDefault();
+      e.stopPropagation();
+      
       const dashboardElement = document.getElementById('sales-dashboard');
       const adminPanel = document.getElementById('admin-panel');
       const collectionContainer = document.getElementById('collectie-container');
+      const loadingElement = document.getElementById('loading');
       
       if (dashboardElement && adminPanel && collectionContainer) {
         const isShowingDashboard = !dashboardElement.hidden;
         
-        dashboardElement.hidden = isShowingDashboard;
-        adminPanel.hidden = !isShowingDashboard;
-        collectionContainer.style.display = isShowingDashboard ? 'grid' : 'none';
-        
-        if (!isShowingDashboard) {
+        if (isShowingDashboard) {
+          // Hide dashboard, show collection
+          dashboardElement.hidden = true;
+          collectionContainer.style.display = 'grid';
+          if (loadingElement) loadingElement.style.display = 'none';
+        } else {
+          // Show dashboard, hide collection
+          dashboardElement.hidden = false;
+          collectionContainer.style.display = 'none';
+          if (loadingElement) loadingElement.style.display = 'none';
           dashboard.load();
         }
       }
