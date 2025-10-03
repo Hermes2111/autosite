@@ -56,6 +56,14 @@ export class CreateDiecastModelDto {
 
 	@IsOptional()
 	@IsString()
+	fees?: string;
+
+	@IsOptional()
+	@IsBoolean()
+	isPaid?: boolean;
+
+	@IsOptional()
+	@IsString()
 	saleNotes?: string;
 
 	@IsOptional()

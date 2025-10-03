@@ -3,6 +3,7 @@ import { renderModels, setupFilters, setAuthGetter } from './web/gallery.js';
 import { setupAuth } from './web/auth.js';
 import { setupAdminForm } from './web/admin.js';
 import { setupDashboard } from './web/dashboard.js';
+import { setupQuickSale } from './web/quickSale.js';
 import { i18n } from './web/i18n.js';
 import { themeManager } from './web/theme.js';
 
@@ -62,6 +63,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   setAuthGetter(() => auth);
   const admin = setupAdminForm(apiClient, auth);
   const dashboard = setupDashboard(auth);
+  const quickSale = setupQuickSale(auth);
   setupFilters(renderModels, auth, admin);
 
   // Dashboard toggle button handler

@@ -34,8 +34,9 @@ export function setupDashboard(auth) {
     const totalSold = soldItems.length;
     const totalRevenue = soldItems.reduce((sum, item) => sum + (parseFloat(item.soldPrice) || 0), 0);
     const totalShipping = soldItems.reduce((sum, item) => sum + (parseFloat(item.shippingCost) || 0), 0);
+    const totalFees = soldItems.reduce((sum, item) => sum + (parseFloat(item.fees) || 0), 0);
     const totalOriginal = soldItems.reduce((sum, item) => sum + (parseFloat(item.price) || 0), 0);
-    const totalProfit = totalRevenue - totalOriginal;
+    const totalProfit = totalRevenue - totalOriginal - totalShipping - totalFees;
 
     document.getElementById('total-sold').textContent = totalSold;
     document.getElementById('total-revenue').textContent = totalRevenue.toFixed(2);
@@ -200,7 +201,9 @@ export function setupDashboard(auth) {
     const profitData = soldItems.map(item => {
       const soldPrice = parseFloat(item.soldPrice) || 0;
       const originalPrice = parseFloat(item.price) || 0;
-      const profit = soldPrice - originalPrice;
+      const shipping = parseFloat(item.shippingCost) || 0;
+      const fees = parseFloat(item.fees) || 0;
+      const profit = soldPrice - originalPrice - shipping - fees;
       return {
         name: item.what.substring(0, 20) + (item.what.length > 20 ? '...' : ''),
         profit: profit,
@@ -255,7 +258,9 @@ export function setupDashboard(auth) {
     const profitData = soldItems.map(item => {
       const soldPrice = parseFloat(item.soldPrice) || 0;
       const originalPrice = parseFloat(item.price) || 0;
-      const profit = soldPrice - originalPrice;
+      const shipping = parseFloat(item.shippingCost) || 0;
+      const fees = parseFloat(item.fees) || 0;
+      const profit = soldPrice - originalPrice - shipping - fees;
       return {
         name: item.what,
         year: item.year,
@@ -306,9 +311,11 @@ export function setupDashboard(auth) {
       const soldPrice = parseFloat(item.soldPrice) || 0;
       const originalPrice = parseFloat(item.price) || 0;
       const shipping = parseFloat(item.shippingCost) || 0;
-      const profit = soldPrice - originalPrice;
+      const fees = parseFloat(item.fees) || 0;
+      const profit = soldPrice - originalPrice - shipping - fees;
       const soldDate = item.soldDate ? new Date(item.soldDate).toLocaleDateString('nl-NL') : '-';
       const channel = item.salesChannel || '-';
+      const isPaid = item.isPaid;
       
       return `
         <tr>
@@ -321,7 +328,9 @@ export function setupDashboard(auth) {
           <td>€${originalPrice.toFixed(2)}</td>
           <td>€${soldPrice.toFixed(2)}</td>
           <td>€${shipping.toFixed(2)}</td>
+          <td>€${fees.toFixed(2)}</td>
           <td class="profit-cell ${profit >= 0 ? 'positive' : 'negative'}">€${profit.toFixed(2)}</td>
+          <td><span class="payment-status ${isPaid ? 'paid' : 'unpaid'}">${isPaid ? '✓ Betaald' : '⏳ Wacht'}</span></td>
         </tr>
       `;
     }).join('');

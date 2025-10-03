@@ -132,10 +132,162 @@
         <div class="container">
             <section class="admin-panel" id="admin-panel" hidden>
                 <div class="panel-header">
-                    <h2>Admin – Nieuw model toevoegen</h2>
-                    <p>Upload nieuwe modellen direct in de collectie.</p>
+                    <h2>📋 Admin Beheer</h2>
+                    <p>Collectie en verkoop management dashboard</p>
                 </div>
-                <form id="admin-form" class="admin-form" enctype="multipart/form-data">
+
+                <!-- Admin Tabs -->
+                <div class="admin-tabs">
+                    <button class="admin-tab active" data-tab="quick-sale">
+                        <i class="fas fa-bolt"></i> Quick Sale
+                    </button>
+                    <button class="admin-tab" data-tab="manage-items">
+                        <i class="fas fa-edit"></i> Items Beheren
+                    </button>
+                    <button class="admin-tab" data-tab="add-new">
+                        <i class="fas fa-plus-circle"></i> Nieuw Item
+                    </button>
+                </div>
+
+                <!-- Quick Sale Tab -->
+                <div id="tab-quick-sale" class="admin-tab-content active">
+                    <div class="quick-sale-section">
+                        <div class="quick-sale-header">
+                            <h3>Verkoop Registreren</h3>
+                        </div>
+
+                        <!-- Model Search -->
+                        <div class="model-search-wrapper">
+                            <div class="search-icon-wrapper">
+                                <i class="fas fa-search"></i>
+                            </div>
+                            <input 
+                                type="text" 
+                                id="quick-sale-search" 
+                                class="model-search-input" 
+                                placeholder="Zoek model om te verkopen... (typ naam of jaar)"
+                                autocomplete="off"
+                            >
+                            <div id="model-suggestions" class="model-suggestions" hidden></div>
+                        </div>
+
+                        <!-- Selected Model Info -->
+                        <div id="selected-model-info" class="selected-model-info" hidden>
+                            <div class="selected-model-details">
+                                <h4 id="selected-model-name"></h4>
+                                <div class="selected-model-meta">
+                                    <span><i class="fas fa-calendar"></i> <span id="selected-model-year"></span></span>
+                                    <span><i class="fas fa-tag"></i> €<span id="selected-model-price"></span></span>
+                                    <span><i class="fas fa-ruler"></i> <span id="selected-model-scale"></span></span>
+                                </div>
+                            </div>
+                            <div class="selected-model-actions">
+                                <button type="button" id="clear-selection">✕ Wissen</button>
+                            </div>
+                        </div>
+
+                        <!-- Quick Sale Form -->
+                        <form id="quick-sale-form" class="quick-sale-form" hidden>
+                            <input type="hidden" id="quick-sale-model-id">
+                            
+                            <label>
+                                <span>Verkocht Datum</span>
+                                <input type="date" name="soldDate" required>
+                            </label>
+
+                            <label>
+                                <span>Verkocht Prijs (€)</span>
+                                <input type="number" name="soldPrice" step="0.01" min="0" required placeholder="Verkoopprijs">
+                            </label>
+
+                            <label>
+                                <span>Verkoop Kanaal</span>
+                                <select name="salesChannel" required>
+                                    <option value="">Selecteer...</option>
+                                    <option value="website">Website</option>
+                                    <option value="facebook">Facebook</option>
+                                    <option value="ebay">eBay</option>
+                                    <option value="catawiki">Catawiki</option>
+                                    <option value="marktplaats">Marktplaats</option>
+                                    <option value="direct">Direct Contact</option>
+                                    <option value="other">Anders</option>
+                                </select>
+                            </label>
+
+                            <label>
+                                <span>Verkocht Aan</span>
+                                <input type="text" name="soldTo" placeholder="Koper naam">
+                            </label>
+
+                            <label>
+                                <span>Locatie</span>
+                                <input type="text" name="soldLocation" placeholder="Stad, Land">
+                            </label>
+
+                            <label>
+                                <span>Verzendkosten (€)</span>
+                                <input type="number" name="shippingCost" step="0.01" min="0" value="0">
+                            </label>
+
+                            <label>
+                                <span>Fees (€)</span>
+                                <input type="number" name="fees" step="0.01" min="0" value="0">
+                            </label>
+
+                            <label class="checkbox-label sale-checkbox">
+                                <input type="checkbox" name="isPaid" checked>
+                                <span>✓ Betaald</span>
+                            </label>
+
+                            <div class="quick-sale-actions">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-check-circle"></i> Verkoop Registreren
+                                </button>
+                                <button type="button" id="quick-sale-cancel" class="btn btn-secondary">
+                                    <i class="fas fa-times"></i> Annuleren
+                                </button>
+                            </div>
+
+                            <p class="form-feedback" id="quick-sale-feedback"></p>
+                        </form>
+
+                        <div class="help-tip">
+                            <i class="fas fa-lightbulb"></i>
+                            <span>Tip: Begin met typen om items te zoeken. Selecteer een item en vul de verkoop details in.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Manage Items Tab -->
+                <div id="tab-manage-items" class="admin-tab-content">
+                    <section class="admin-edit">
+                        <h3>Bestaande modellen beheren</h3>
+                        <p>Selecteer een model om te bewerken of verwijderen.</p>
+                        <select id="admin-model-select-manage">
+                            <option value="">Laden...</option>
+                        </select>
+                    </section>
+
+                    <div class="admin-stats">
+                        <div class="admin-stat-card">
+                            <div class="admin-stat-number" id="total-items-stat">0</div>
+                            <div class="admin-stat-label">Totaal Items</div>
+                        </div>
+                        <div class="admin-stat-card">
+                            <div class="admin-stat-number" id="sold-items-stat">0</div>
+                            <div class="admin-stat-label">Verkocht</div>
+                        </div>
+                        <div class="admin-stat-card">
+                            <div class="admin-stat-number" id="available-items-stat">0</div>
+                            <div class="admin-stat-label">Beschikbaar</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Add New Item Tab -->
+                <div id="tab-add-new" class="admin-tab-content">
+                    <h3 style="margin-bottom: 24px;">Nieuw Model Toevoegen</h3>
+                    <form id="admin-form" class="admin-form" enctype="multipart/form-data">
                     <div class="form-grid">
                         <label>
                             <span>Jaar</span>
@@ -187,6 +339,10 @@
                                     <input type="number" name="shippingCost" step="0.01" min="0" placeholder="Shipping costs">
                                 </label>
                                 <label>
+                                    <span>Fees/Commissie (€)</span>
+                                    <input type="number" name="fees" step="0.01" min="0" placeholder="Platform fees">
+                                </label>
+                                <label>
                                     <span>Verkocht Aan</span>
                                     <input type="text" name="soldTo" placeholder="Koper naam">
                                 </label>
@@ -206,6 +362,10 @@
                                         <option value="direct">Direct Contact</option>
                                         <option value="other">Anders</option>
                                     </select>
+                                </label>
+                                <label class="checkbox-label sale-checkbox">
+                                    <input type="checkbox" name="isPaid" id="is-paid-checkbox">
+                                    <span>✓ Betaald</span>
                                 </label>
                                 <label class="sale-notes-label">
                                     <span>Notities</span>
@@ -227,12 +387,13 @@
                     <p class="form-feedback" id="admin-feedback"></p>
                 </form>
                 <section class="admin-edit" id="admin-edit-section" hidden>
-                    <h3>Bestaande modellen beheren</h3>
-                    <p>Selecteer een model om te bewerken of verwijderen.</p>
+                    <h3>Of bewerk bestaand model</h3>
+                    <p>Selecteer een model om te bewerken.</p>
                     <select id="admin-model-select">
                         <option value="">Laden...</option>
                     </select>
                 </section>
+                </div>
             </section>
 
             <!-- Sales Dashboard (Admin Only) -->
@@ -312,12 +473,14 @@
                                 <th>Origineel</th>
                                 <th>Verkocht</th>
                                 <th>Verzend</th>
+                                <th>Fees</th>
                                 <th>Winst</th>
+                                <th>Status</th>
                             </tr>
                         </thead>
                         <tbody id="sales-table-body">
                             <tr>
-                                <td colspan="10" style="text-align: center; padding: 40px;">
+                                <td colspan="12" style="text-align: center; padding: 40px;">
                                     Geen verkochte items gevonden
                                 </td>
                             </tr>

@@ -53,6 +53,12 @@ export class DiecastModel {
 	@Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
 	shippingCost!: string | null;
 
+	@Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
+	fees!: string | null;
+
+	@Column({ default: false })
+	isPaid!: boolean;
+
 	@Column({ type: 'text', nullable: true })
 	saleNotes!: string | null;
 

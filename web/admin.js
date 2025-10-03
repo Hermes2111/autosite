@@ -82,6 +82,8 @@ export function setupAdminForm(api, auth) {
         if (form.soldTo) form.soldTo.value = model.soldTo || '';
         if (form.soldLocation) form.soldLocation.value = model.soldLocation || '';
         if (form.shippingCost) form.shippingCost.value = model.shippingCost || '';
+        if (form.fees) form.fees.value = model.fees || '';
+        if (form.isPaid) form.isPaid.checked = model.isPaid || false;
         if (form.saleNotes) form.saleNotes.value = model.saleNotes || '';
         if (form.salesChannel) form.salesChannel.value = model.salesChannel || '';
       }
@@ -133,6 +135,11 @@ export function setupAdminForm(api, auth) {
       // Add isSold as boolean
       formData.set('isSold', form.isSold.checked);
       
+      // Add isPaid as boolean
+      if (form.isSold.checked) {
+        formData.set('isPaid', form.isPaid.checked);
+      }
+      
       // Clear sale data if not sold
       if (!form.isSold.checked) {
         formData.delete('soldDate');
@@ -140,6 +147,8 @@ export function setupAdminForm(api, auth) {
         formData.delete('soldTo');
         formData.delete('soldLocation');
         formData.delete('shippingCost');
+        formData.delete('fees');
+        formData.delete('isPaid');
         formData.delete('saleNotes');
         formData.delete('salesChannel');
       }

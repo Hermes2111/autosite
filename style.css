@@ -2222,3 +2222,309 @@ body {
         padding: 10px 8px;
     }
 }
+
+/* Sale Checkbox in sale fields */
+.sale-checkbox {
+    background: rgba(0, 151, 57, 0.1);
+    border-color: rgba(0, 151, 57, 0.3);
+}
+
+.sale-checkbox:hover {
+    background: rgba(0, 151, 57, 0.15);
+    border-color: var(--accent-green);
+}
+
+.sale-checkbox input[type="checkbox"]:checked {
+    accent-color: var(--accent-green);
+}
+
+/* Payment Status Badge */
+.payment-status {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.payment-status.paid {
+    background: rgba(0, 151, 57, 0.2);
+    color: var(--accent-green);
+}
+
+.payment-status.unpaid {
+    background: rgba(230, 126, 34, 0.2);
+    color: #e67e22;
+}
+
+/* Admin Panel Tabs */
+.admin-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 32px;
+    border-bottom: 2px solid var(--border);
+}
+
+.admin-tab {
+    padding: 14px 24px;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s ease;
+    border-bottom: 3px solid transparent;
+}
+
+.admin-tab:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.admin-tab.active {
+    color: var(--accent-yellow);
+    border-bottom-color: var(--accent-yellow);
+}
+
+.admin-tab i {
+    margin-right: 8px;
+}
+
+.admin-tab-content {
+    display: none;
+}
+
+.admin-tab-content.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Quick Sale Section */
+.quick-sale-section {
+    background: rgba(0, 151, 57, 0.05);
+    border: 1px solid rgba(0, 151, 57, 0.2);
+    border-radius: 12px;
+    padding: 32px;
+    margin-bottom: 32px;
+}
+
+.quick-sale-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+}
+
+.quick-sale-header h3 {
+    color: var(--accent-green);
+    font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.quick-sale-header h3::before {
+    content: '⚡';
+    font-size: 1.8rem;
+}
+
+.model-search-wrapper {
+    position: relative;
+    margin-bottom: 24px;
+}
+
+.model-search-input {
+    width: 100%;
+    padding: 16px 20px 16px 48px;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.model-search-input:focus {
+    outline: none;
+    border-color: var(--accent-green);
+    box-shadow: 0 0 0 2px rgba(0, 151, 57, 0.2);
+}
+
+.search-icon-wrapper {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    font-size: 1.2rem;
+}
+
+.model-suggestions {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 100;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.suggestion-item {
+    padding: 14px 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-bottom: 1px solid var(--border);
+}
+
+.suggestion-item:last-child {
+    border-bottom: none;
+}
+
+.suggestion-item:hover {
+    background: rgba(0, 151, 57, 0.1);
+}
+
+.suggestion-item-name {
+    color: var(--text-primary);
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.suggestion-item-details {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+}
+
+.suggestion-item-details span {
+    margin-right: 12px;
+}
+
+.quick-sale-form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+.quick-sale-actions {
+    grid-column: 1 / -1;
+    display: flex;
+    gap: 12px;
+    margin-top: 12px;
+}
+
+/* Selected Model Info */
+.selected-model-info {
+    background: rgba(255, 221, 0, 0.05);
+    border: 1px solid rgba(255, 221, 0, 0.3);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.selected-model-details h4 {
+    color: var(--accent-yellow);
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+}
+
+.selected-model-meta {
+    display: flex;
+    gap: 16px;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.selected-model-actions button {
+    padding: 8px 16px;
+    background: rgba(231, 76, 60, 0.2);
+    border: 1px solid rgba(231, 76, 60, 0.4);
+    color: #e74c3c;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.selected-model-actions button:hover {
+    background: rgba(231, 76, 60, 0.3);
+    transform: translateY(-2px);
+}
+
+/* Stats Cards in Admin */
+.admin-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+}
+
+.admin-stat-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.admin-stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    border-color: var(--accent-yellow);
+}
+
+.admin-stat-number {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--accent-yellow);
+    margin-bottom: 8px;
+}
+
+.admin-stat-label {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Help Tips */
+.help-tip {
+    background: rgba(52, 152, 219, 0.1);
+    border-left: 3px solid #3498db;
+    padding: 12px 16px;
+    border-radius: 4px;
+    margin-top: 16px;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.help-tip i {
+    color: #3498db;
+    font-size: 1.2rem;
+}
