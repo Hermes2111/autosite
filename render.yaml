@@ -32,8 +32,6 @@ services:
   - type: web
     name: autosite-frontend
     runtime: static
-    region: frankfurt
-    plan: free
     buildCommand: echo "No build needed - static site"
     staticPublishPath: .
     headers:
@@ -55,6 +53,5 @@ databases:
   - name: autosite-db
     databaseName: autosite
     user: autosite
-    region: frankfurt
     plan: free
 
