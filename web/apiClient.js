@@ -9,7 +9,7 @@ const detectApiBase = () => {
 
   // Production: Check if we're on Render.com
   if (window.location.hostname.includes('onrender.com')) {
-    return 'https://autosite-api.onrender.com/api';
+    return 'https://f1-collection-api.onrender.com/api';
   }
 
   // Fallback for other deployments
