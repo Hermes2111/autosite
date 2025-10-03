@@ -7,6 +7,12 @@ const detectApiBase = () => {
     return 'http://localhost:3000/api';
   }
 
+  // Production: Check if we're on Render.com
+  if (window.location.hostname.includes('onrender.com')) {
+    return 'https://autosite-api.onrender.com/api';
+  }
+
+  // Fallback for other deployments
   const { protocol, hostname } = window.location;
   const defaultPort = protocol === 'https:' ? 443 : 80;
   const backendPort = protocol === 'https:' ? defaultPort : 3000;

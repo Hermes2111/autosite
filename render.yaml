@@ -1,0 +1,60 @@
+services:
+  # Backend API Service
+  - type: web
+    name: autosite-api
+    runtime: node
+    region: frankfurt
+    plan: free
+    buildCommand: cd backend && npm install && npm run build
+    startCommand: cd backend && npm run start:prod
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: DATABASE_URL
+        fromDatabase:
+          name: autosite-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: GOOGLE_CALLBACK_URL
+        sync: false
+    healthCheckPath: /api/health
+
+  # Frontend Static Site
+  - type: web
+    name: autosite-frontend
+    runtime: static
+    region: frankfurt
+    plan: free
+    buildCommand: echo "No build needed - static site"
+    staticPublishPath: .
+    headers:
+      - path: /*
+        name: X-Frame-Options
+        value: SAMEORIGIN
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+    routes:
+      - type: rewrite
+        source: /api/*
+        destination: https://autosite-api.onrender.com/api/*
+    envVars:
+      - key: API_URL
+        value: https://autosite-api.onrender.com
+
+databases:
+  - name: autosite-db
+    databaseName: autosite
+    user: autosite
+    region: frankfurt
+    plan: free
+
