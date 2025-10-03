@@ -1,4 +1,4 @@
-:root {
+:root, [data-theme="dark"] {
     --accent-yellow: #FFDD00;
     --accent-green: #009739;
     --accent-blue: #003D8E;
@@ -13,6 +13,23 @@
     --text-muted: #505050;
     --border: rgba(255, 255, 255, 0.05);
     --border-hover: rgba(255, 221, 0, 0.3);
+}
+
+[data-theme="light"] {
+    --accent-yellow: #FFC700;
+    --accent-green: #008030;
+    --accent-blue: #0033A0;
+    --accent-glow-yellow: rgba(255, 199, 0, 0.15);
+    --accent-glow-green: rgba(0, 128, 48, 0.15);
+    --accent-glow-blue: rgba(0, 51, 160, 0.15);
+    --bg-primary: #FFFFFF;
+    --bg-secondary: #F5F5F5;
+    --bg-card: #FFFFFF;
+    --text-primary: #1A1A1A;
+    --text-secondary: #4A4A4A;
+    --text-muted: #8A8A8A;
+    --border: rgba(0, 0, 0, 0.08);
+    --border-hover: rgba(255, 199, 0, 0.4);
 }
 
 * {
@@ -150,6 +167,79 @@ body {
 .nav-link:hover::before,
 .nav-link.active::before {
     width: 100%;
+}
+
+/* Nav Controls */
+.nav-controls {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.icon-button {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+    gap: 6px;
+}
+
+.icon-button:hover {
+    background: var(--bg-secondary);
+    border-color: var(--border-hover);
+    transform: translateY(-2px);
+}
+
+.icon-button span {
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+/* Language Switcher */
+.language-switcher {
+    position: relative;
+}
+
+.language-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px;
+    min-width: 180px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+}
+
+.language-option {
+    width: 100%;
+    padding: 10px 14px;
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    text-align: left;
+    cursor: pointer;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.language-option:hover {
+    background: var(--bg-secondary);
+    color: var(--accent-yellow);
 }
 
 /* Hero Content */

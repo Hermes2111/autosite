@@ -22,18 +22,38 @@
                     <span>F1 <strong>Collection</strong></span>
                 </div>
                 <ul class="nav-menu">
-                    <li><a href="#" class="nav-link active">Collectie</a></li>
-                    <li><a href="#" class="nav-link">Over</a></li>
-                    <li><a href="#" class="nav-link">Contact</a></li>
+                    <li><a href="#" class="nav-link active" data-i18n="nav.collection">Collectie</a></li>
+                    <li><a href="#" class="nav-link" data-i18n="nav.about">Over</a></li>
+                    <li><a href="#" class="nav-link" data-i18n="nav.contact">Contact</a></li>
                 </ul>
-                <div class="auth-controls" id="auth-controls">
-                    <button class="btn btn-secondary" id="login-button">Inloggen</button>
+                <div class="nav-controls">
+                    <!-- Theme Switcher -->
+                    <button class="icon-button" id="theme-toggle" title="Toggle theme">
+                        <i class="fas fa-sun"></i>
+                    </button>
+                    
+                    <!-- Language Switcher -->
+                    <div class="language-switcher">
+                        <button class="icon-button" id="language-toggle">
+                            <i class="fas fa-globe"></i>
+                            <span id="current-language">NL</span>
+                        </button>
+                        <div class="language-dropdown" id="language-dropdown" hidden>
+                            <button class="language-option" data-lang="nl">🇳🇱 Nederlands</button>
+                            <button class="language-option" data-lang="en">🇬🇧 English</button>
+                            <button class="language-option" data-lang="fr">🇫🇷 Français</button>
+                        </div>
+                    </div>
+                    
+                    <div class="auth-controls" id="auth-controls">
+                        <button class="btn btn-secondary" id="login-button" data-i18n="nav.login">Inloggen</button>
+                    </div>
                 </div>
             </div>
         </nav>
         <div class="hero-content">
-            <h1 class="hero-title">Formule 1 Modelauto Collectie</h1>
-            <p class="hero-subtitle">Premium verzameling Formule 1 memorabilia & schaalmodellen</p>
+            <h1 class="hero-title" data-i18n="hero.title">Formule 1 Modelauto Collectie</h1>
+            <p class="hero-subtitle" data-i18n="hero.subtitle">Premium verzameling Formule 1 memorabilia & schaalmodellen</p>
         </div>
     </header>
 
@@ -43,23 +63,23 @@
             <div class="filter-grid">
                 <div class="search-wrapper">
                     <i class="fas fa-search search-icon"></i>
-                    <input type="text" id="search-input" class="search-input" placeholder="Zoek in collectie...">
+                    <input type="text" id="search-input" class="search-input" placeholder="Zoek in collectie..." data-i18n="filter.search">
         </div>
                 <div class="filter-controls">
                 <select id="year-filter" class="filter-select">
-                    <option value="">Alle jaren</option>
+                    <option value="" data-i18n="filter.allYears">Alle jaren</option>
                 </select>
                 <select id="scale-filter" class="filter-select">
-                    <option value="">Alle schalen</option>
+                    <option value="" data-i18n="filter.allScales">Alle schalen</option>
                     <option value="1:18">1:18</option>
                     <option value="1:43">1:43</option>
                     <option value="1:8">1:8</option>
                 </select>
                 <select id="sort-by" class="filter-select">
-                        <option value="year-desc">Nieuwste eerst</option>
-                        <option value="year-asc">Oudste eerst</option>
-                    <option value="price-desc">Prijs (hoog-laag)</option>
-                    <option value="price-asc">Prijs (laag-hoog)</option>
+                        <option value="year-desc" data-i18n="filter.sortNewest">Nieuwste eerst</option>
+                        <option value="year-asc" data-i18n="filter.sortOldest">Oudste eerst</option>
+                    <option value="price-desc" data-i18n="filter.sortPriceHigh">Prijs (hoog-laag)</option>
+                    <option value="price-asc" data-i18n="filter.sortPriceLow">Prijs (laag-hoog)</option>
                 </select>
                 </div>
             </div>
@@ -74,28 +94,28 @@
                     <div class="stat-icon"><i class="fas fa-car"></i></div>
                     <div class="stat-content">
                 <div class="stat-number" id="total-items">0</div>
-                <div class="stat-label">Totaal items</div>
+                <div class="stat-label" data-i18n="stats.totalItems">Totaal items</div>
             </div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon"><i class="fas fa-calendar"></i></div>
                     <div class="stat-content">
                 <div class="stat-number" id="unique-years">0</div>
-                <div class="stat-label">Unieke jaren</div>
+                <div class="stat-label" data-i18n="stats.uniqueYears">Unieke jaren</div>
             </div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon"><i class="fas fa-euro-sign"></i></div>
                     <div class="stat-content">
                 <div class="stat-number">€<span id="total-value">0</span></div>
-                <div class="stat-label">Totale waarde</div>
+                <div class="stat-label" data-i18n="stats.totalValue">Totale waarde</div>
             </div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon"><i class="fas fa-images"></i></div>
                     <div class="stat-content">
                 <div class="stat-number" id="with-images">0</div>
-                        <div class="stat-label">Met foto's</div>
+                        <div class="stat-label" data-i18n="stats.withImages">Met foto's</div>
                     </div>
                 </div>
             </div>
