@@ -9,6 +9,7 @@ import { DriverModule } from './driver/driver.module';
 import { AuthModule } from './auth/auth.module';
 import { AdminModule } from './admin/admin.module';
 import { WatchlistModule } from './watchlist/watchlist.module';
+import { CustomerModule } from './customer/customer.module';
 
 @Module({
 	imports: [
@@ -34,6 +35,7 @@ import { WatchlistModule } from './watchlist/watchlist.module';
 		AuthModule,
 		AdminModule,
 		WatchlistModule,
+		CustomerModule,
 	],
 })
 export class AppModule {}

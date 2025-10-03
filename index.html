@@ -144,6 +144,9 @@
                     <button class="admin-tab" data-tab="quick-sale">
                         <i class="fas fa-bolt"></i> Quick Sale
                     </button>
+                    <button class="admin-tab" data-tab="customers">
+                        <i class="fas fa-users"></i> Klanten
+                    </button>
                     <button class="admin-tab" data-tab="manage-items">
                         <i class="fas fa-edit"></i> Items Beheren
                     </button>
@@ -347,6 +350,41 @@
                         <div class="help-tip">
                             <i class="fas fa-lightbulb"></i>
                             <span>Tip: Begin met typen om items te zoeken. Selecteer een item en vul de verkoop details in.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Customers Tab -->
+                <div id="tab-customers" class="admin-tab-content">
+                    <div class="customers-section">
+                        <div class="section-header">
+                            <h3>👥 Klanten Beheer</h3>
+                            <button class="btn btn-primary" id="add-customer-btn">
+                                <i class="fas fa-plus"></i> Nieuwe Klant
+                            </button>
+                        </div>
+
+                        <div class="customers-table-wrapper">
+                            <table class="customers-table">
+                                <thead>
+                                    <tr>
+                                        <th>Naam</th>
+                                        <th>Email</th>
+                                        <th>Telefoon</th>
+                                        <th>Locatie</th>
+                                        <th>Aankopen</th>
+                                        <th>Totaal Besteed</th>
+                                        <th>Acties</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="customers-table-body">
+                                    <tr>
+                                        <td colspan="7" style="text-align: center; padding: 40px;">
+                                            Laden...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -642,6 +680,63 @@
                     <span>Onthoud URL</span>
                 </label>
             </details>
+        </div>
+    </div>
+
+    <!-- Customer Add/Edit Modal -->
+    <div id="customer-modal" class="modal" hidden>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">Nieuwe Klant</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="customer-form" class="customer-form">
+                <label>
+                    <span>Naam *</span>
+                    <input type="text" name="name" required placeholder="Klantnaam">
+                </label>
+                <label>
+                    <span>Email</span>
+                    <input type="email" name="email" placeholder="email@voorbeeld.nl">
+                </label>
+                <label>
+                    <span>Telefoon</span>
+                    <input type="tel" name="phone" placeholder="+31 6 1234 5678">
+                </label>
+                <label>
+                    <span>Adres</span>
+                    <input type="text" name="address" placeholder="Straat 123">
+                </label>
+                <label>
+                    <span>Stad</span>
+                    <input type="text" name="city" placeholder="Amsterdam">
+                </label>
+                <label>
+                    <span>Land</span>
+                    <input type="text" name="country" placeholder="Nederland">
+                </label>
+                <label>
+                    <span>Notities</span>
+                    <textarea name="notes" rows="3" placeholder="Extra informatie over de klant..."></textarea>
+                </label>
+                <div class="modal-actions">
+                    <button type="submit" class="btn btn-primary">Opslaan</button>
+                    <button type="button" class="btn btn-secondary close-modal">Annuleren</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Customer Detail Modal -->
+    <div id="customer-detail-modal" class="modal" hidden>
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3>Klant Details</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div id="customer-detail-content" class="customer-detail-content">
+                <!-- Content will be populated by JavaScript -->
+            </div>
         </div>
     </div>
 

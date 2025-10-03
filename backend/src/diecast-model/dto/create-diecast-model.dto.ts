@@ -47,6 +47,9 @@ export class CreateDiecastModelDto {
 	soldTo?: string;
 
 	@IsOptional()
+	customerId?: number;
+
+	@IsOptional()
 	@IsString()
 	soldLocation?: string;
 

@@ -4,6 +4,7 @@ import { setupAuth } from './web/auth.js';
 import { setupAdminForm } from './web/admin.js';
 import { setupDashboard } from './web/dashboard.js';
 import { setupQuickSale } from './web/quickSale.js';
+import { setupCustomerManagement } from './web/customers.js';
 import { i18n } from './web/i18n.js';
 import { themeManager } from './web/theme.js';
 
@@ -64,6 +65,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const admin = setupAdminForm(apiClient, auth);
   const dashboard = setupDashboard(auth);
   const quickSale = setupQuickSale(auth);
+  const customers = setupCustomerManagement(auth);
   setupFilters(renderModels, auth, admin);
 
   // Admin tabs functionality
@@ -84,9 +86,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (targetContent) {
         targetContent.classList.add('active');
         
-        // Load dashboard data when dashboard tab is clicked
+        // Load data when tabs are clicked
         if (targetTab === 'dashboard') {
           dashboard.load();
+        } else if (targetTab === 'customers') {
+          customers.load();
         }
       }
     });
