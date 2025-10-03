@@ -16,16 +16,32 @@ import { CustomerModule } from './customer/customer.module';
 		ConfigModule.forRoot({ isGlobal: true }),
 		TypeOrmModule.forRootAsync({
 			imports: [ConfigModule],
-			useFactory: () => ({
-				type: 'postgres',
-				host: process.env.DB_HOST || 'localhost',
-				port: Number(process.env.DB_PORT || 5432),
-				username: process.env.DB_USER || 'devusr',
-				password: process.env.DB_PASSWORD || 'devpwd',
-				database: process.env.DB_NAME || 'autosite',
-				autoLoadEntities: true,
-				synchronize: false,
-			}),
+			useFactory: () => {
+				// Use DATABASE_URL from Render, or individual vars for local dev
+				if (process.env.DATABASE_URL) {
+					return {
+						type: 'postgres',
+						url: process.env.DATABASE_URL,
+						autoLoadEntities: true,
+						synchronize: false,
+						ssl: {
+							rejectUnauthorized: false,
+						},
+					};
+				}
+				
+				// Local development fallback
+				return {
+					type: 'postgres',
+					host: process.env.DB_HOST || 'localhost',
+					port: Number(process.env.DB_PORT || 5432),
+					username: process.env.DB_USER || 'devusr',
+					password: process.env.DB_PASSWORD || 'devpwd',
+					database: process.env.DB_NAME || 'autosite',
+					autoLoadEntities: true,
+					synchronize: false,
+				};
+			},
 		}),
 		HealthModule,
 		DiecastModelModule,
