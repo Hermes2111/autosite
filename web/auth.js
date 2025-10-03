@@ -193,7 +193,11 @@ export function setupAuth(api) {
   loginTab?.addEventListener('click', () => setTab('login'));
   registerTab?.addEventListener('click', () => setTab('register'));
 
-  // Google OAuth not configured - button removed from HTML
+  // Google OAuth login
+  googleButton?.addEventListener('click', () => {
+    const backendUrl = api.baseUrl.replace('/api', '');
+    window.location.href = `${backendUrl}/api/auth/google`;
+  });
 
   loginForm.addEventListener('submit', async (event) => {
     event.preventDefault();

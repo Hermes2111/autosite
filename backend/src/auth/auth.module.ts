@@ -27,7 +27,7 @@ import { GoogleStrategy } from './strategies/google.strategy';
   providers: [
     AuthService, 
     JwtStrategy,
-    // GoogleStrategy temporarily disabled - add your Google OAuth credentials to .env to enable
+    GoogleStrategy,
   ],
 })
 export class AuthModule {}
