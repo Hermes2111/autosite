@@ -124,7 +124,6 @@ export function setupAuth(api) {
           <i class="fas fa-user-circle"></i>
           <span>${currentUser.name} (${currentUser.roles.join(', ')})</span>
         </div>
-        ${isAdmin ? '<button class="icon-button" id="dashboard-toggle" title="Dashboard"><i class="fas fa-chart-line"></i></button>' : ''}
         <button class="logout-button" id="logout-button">Uitloggen</button>
       `;
       

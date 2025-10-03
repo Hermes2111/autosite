@@ -138,7 +138,10 @@
 
                 <!-- Admin Tabs -->
                 <div class="admin-tabs">
-                    <button class="admin-tab active" data-tab="quick-sale">
+                    <button class="admin-tab active" data-tab="dashboard">
+                        <i class="fas fa-chart-line"></i> 📊 Dashboard
+                    </button>
+                    <button class="admin-tab" data-tab="quick-sale">
                         <i class="fas fa-bolt"></i> Quick Sale
                     </button>
                     <button class="admin-tab" data-tab="manage-items">
@@ -149,8 +152,98 @@
                     </button>
                 </div>
 
+                <!-- Dashboard Tab -->
+                <div id="tab-dashboard" class="admin-tab-content active">
+                    <div id="sales-dashboard-content">
+                        <!-- Summary Statistics -->
+                        <div class="dashboard-stats">
+                            <div class="dashboard-stat-card">
+                                <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                                <div class="stat-details">
+                                    <div class="stat-value" id="total-sold">0</div>
+                                    <div class="stat-label">Verkochte Items</div>
+                                </div>
+                            </div>
+                            <div class="dashboard-stat-card">
+                                <div class="stat-icon success"><i class="fas fa-euro-sign"></i></div>
+                                <div class="stat-details">
+                                    <div class="stat-value">€<span id="total-revenue">0</span></div>
+                                    <div class="stat-label">Totale Omzet</div>
+                                </div>
+                            </div>
+                            <div class="dashboard-stat-card">
+                                <div class="stat-icon warning"><i class="fas fa-truck"></i></div>
+                                <div class="stat-details">
+                                    <div class="stat-value">€<span id="total-shipping">0</span></div>
+                                    <div class="stat-label">Verzendkosten</div>
+                                </div>
+                            </div>
+                            <div class="dashboard-stat-card">
+                                <div class="stat-icon profit"><i class="fas fa-chart-line"></i></div>
+                                <div class="stat-details">
+                                    <div class="stat-value profit-loss" id="total-profit">€0</div>
+                                    <div class="stat-label">Winst/Verlies</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Charts Row -->
+                        <div class="dashboard-charts">
+                            <div class="chart-card">
+                                <h3>Verkopen per Maand</h3>
+                                <canvas id="sales-per-month-chart"></canvas>
+                            </div>
+                            <div class="chart-card">
+                                <h3>Verkoop Kanalen</h3>
+                                <canvas id="sales-channels-chart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="dashboard-charts">
+                            <div class="chart-card">
+                                <h3>Winst/Verlies Analyse</h3>
+                                <canvas id="profit-loss-chart"></canvas>
+                            </div>
+                            <div class="chart-card">
+                                <h3>Top 5 Meest Winstgevende</h3>
+                                <div id="top-profitable-list" class="top-list"></div>
+                            </div>
+                        </div>
+
+                        <!-- Sales Table -->
+                        <div class="dashboard-table-wrapper">
+                            <h3>Recente Verkopen</h3>
+                            <table class="sales-table" id="sales-table">
+                                <thead>
+                                    <tr>
+                                        <th>Datum</th>
+                                        <th>Item</th>
+                                        <th>Jaar</th>
+                                        <th>Koper</th>
+                                        <th>Locatie</th>
+                                        <th>Kanaal</th>
+                                        <th>Origineel</th>
+                                        <th>Verkocht</th>
+                                        <th>Verzend</th>
+                                        <th>Fees</th>
+                                        <th>Winst</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="sales-table-body">
+                                    <tr>
+                                        <td colspan="12" style="text-align: center; padding: 40px;">
+                                            Geen verkochte items gevonden
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Quick Sale Tab -->
-                <div id="tab-quick-sale" class="admin-tab-content active">
+                <div id="tab-quick-sale" class="admin-tab-content">
                     <div class="quick-sale-section">
                         <div class="quick-sale-header">
                             <h3>Verkoop Registreren</h3>
@@ -393,99 +486,6 @@
                         <option value="">Laden...</option>
                     </select>
                 </section>
-                </div>
-            </section>
-
-            <!-- Sales Dashboard (Admin Only) -->
-            <section class="sales-dashboard" id="sales-dashboard" hidden>
-                <div class="panel-header">
-                    <h2>📊 Verkoop Dashboard</h2>
-                    <p>Overzicht van alle verkopen en statistieken</p>
-                </div>
-                
-                <!-- Summary Statistics -->
-                <div class="dashboard-stats">
-                    <div class="dashboard-stat-card">
-                        <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
-                        <div class="stat-details">
-                            <div class="stat-value" id="total-sold">0</div>
-                            <div class="stat-label">Verkochte Items</div>
-                        </div>
-                    </div>
-                    <div class="dashboard-stat-card">
-                        <div class="stat-icon success"><i class="fas fa-euro-sign"></i></div>
-                        <div class="stat-details">
-                            <div class="stat-value">€<span id="total-revenue">0</span></div>
-                            <div class="stat-label">Totale Omzet</div>
-                        </div>
-                    </div>
-                    <div class="dashboard-stat-card">
-                        <div class="stat-icon warning"><i class="fas fa-truck"></i></div>
-                        <div class="stat-details">
-                            <div class="stat-value">€<span id="total-shipping">0</span></div>
-                            <div class="stat-label">Verzendkosten</div>
-                        </div>
-                    </div>
-                    <div class="dashboard-stat-card">
-                        <div class="stat-icon profit"><i class="fas fa-chart-line"></i></div>
-                        <div class="stat-details">
-                            <div class="stat-value profit-loss" id="total-profit">€0</div>
-                            <div class="stat-label">Winst/Verlies</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Charts Row -->
-                <div class="dashboard-charts">
-                    <div class="chart-card">
-                        <h3>Verkopen per Maand</h3>
-                        <canvas id="sales-per-month-chart"></canvas>
-                    </div>
-                    <div class="chart-card">
-                        <h3>Verkoop Kanalen</h3>
-                        <canvas id="sales-channels-chart"></canvas>
-                    </div>
-                </div>
-
-                <div class="dashboard-charts">
-                    <div class="chart-card">
-                        <h3>Winst/Verlies Analyse</h3>
-                        <canvas id="profit-loss-chart"></canvas>
-                    </div>
-                    <div class="chart-card">
-                        <h3>Top 5 Meest Winstgevende</h3>
-                        <div id="top-profitable-list" class="top-list"></div>
-                    </div>
-                </div>
-
-                <!-- Sales Table -->
-                <div class="dashboard-table-wrapper">
-                    <h3>Recente Verkopen</h3>
-                    <table class="sales-table" id="sales-table">
-                        <thead>
-                            <tr>
-                                <th>Datum</th>
-                                <th>Item</th>
-                                <th>Jaar</th>
-                                <th>Koper</th>
-                                <th>Locatie</th>
-                                <th>Kanaal</th>
-                                <th>Origineel</th>
-                                <th>Verkocht</th>
-                                <th>Verzend</th>
-                                <th>Fees</th>
-                                <th>Winst</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="sales-table-body">
-                            <tr>
-                                <td colspan="12" style="text-align: center; padding: 40px;">
-                                    Geen verkochte items gevonden
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
                 </div>
             </section>
 

@@ -66,37 +66,37 @@ document.addEventListener('DOMContentLoaded', async () => {
   const quickSale = setupQuickSale(auth);
   setupFilters(renderModels, auth, admin);
 
-  // Dashboard toggle button handler
-  document.addEventListener('click', (e) => {
-    const dashboardBtn = e.target.closest('#dashboard-toggle');
-    if (dashboardBtn) {
-      e.preventDefault();
-      e.stopPropagation();
+  // Admin tabs functionality
+  const adminTabs = document.querySelectorAll('.admin-tab');
+  const adminTabContents = document.querySelectorAll('.admin-tab-content');
+  
+  adminTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const targetTab = tab.dataset.tab;
       
-      const dashboardElement = document.getElementById('sales-dashboard');
-      const adminPanel = document.getElementById('admin-panel');
-      const collectionContainer = document.getElementById('collectie-container');
-      const loadingElement = document.getElementById('loading');
+      // Remove active class from all tabs and contents
+      adminTabs.forEach(t => t.classList.remove('active'));
+      adminTabContents.forEach(content => content.classList.remove('active'));
       
-      if (dashboardElement && adminPanel && collectionContainer) {
-        const isShowingDashboard = !dashboardElement.hidden;
+      // Add active class to clicked tab and corresponding content
+      tab.classList.add('active');
+      const targetContent = document.getElementById(`tab-${targetTab}`);
+      if (targetContent) {
+        targetContent.classList.add('active');
         
-        if (isShowingDashboard) {
-          // Hide dashboard, show collection
-          dashboardElement.hidden = true;
-          collectionContainer.style.display = 'grid';
-          if (loadingElement) loadingElement.style.display = 'none';
-        } else {
-          // Show dashboard, hide collection
-          dashboardElement.hidden = false;
-          collectionContainer.style.display = 'none';
-          if (loadingElement) loadingElement.style.display = 'none';
+        // Load dashboard data when dashboard tab is clicked
+        if (targetTab === 'dashboard') {
           dashboard.load();
         }
       }
-    }
+    });
   });
 
   await auth.checkSession();
   await renderModels();
+  
+  // Load dashboard if admin panel is visible
+  if (!document.getElementById('admin-panel').hidden) {
+    dashboard.load();
+  }
 });
