@@ -117,13 +117,17 @@ export function setupAuth(api) {
       }
       if (adminPanel) adminPanel.hidden = true;
     } else {
+      const isAdmin = currentUser.roles.includes('admin');
+      
       controls.innerHTML = `
         <div class="user-info">
           <i class="fas fa-user-circle"></i>
           <span>${currentUser.name} (${currentUser.roles.join(', ')})</span>
         </div>
+        ${isAdmin ? '<button class="icon-button" id="dashboard-toggle" title="Dashboard"><i class="fas fa-chart-line"></i></button>' : ''}
         <button class="logout-button" id="logout-button">Uitloggen</button>
       `;
+      
       const logoutBtn = document.getElementById('logout-button');
       if (logoutBtn) {
         logoutBtn.addEventListener('click', async () => {
@@ -131,9 +135,12 @@ export function setupAuth(api) {
           await renderModels();
         });
       }
+      
       if (adminPanel) {
-        adminPanel.hidden = !currentUser.roles.includes('admin');
+        adminPanel.hidden = !isAdmin;
       }
+      
+      // Dashboard toggle will be handled by script.js
     }
   }
 

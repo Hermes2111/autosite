@@ -34,5 +34,32 @@ export class CreateDiecastModelDto {
 	@IsOptional()
 	@IsBoolean()
 	isSold?: boolean;
+
+	@IsOptional()
+	soldDate?: Date;
+
+	@IsOptional()
+	@IsString()
+	soldPrice?: string;
+
+	@IsOptional()
+	@IsString()
+	soldTo?: string;
+
+	@IsOptional()
+	@IsString()
+	soldLocation?: string;
+
+	@IsOptional()
+	@IsString()
+	shippingCost?: string;
+
+	@IsOptional()
+	@IsString()
+	saleNotes?: string;
+
+	@IsOptional()
+	@IsString()
+	salesChannel?: string;
 }
 

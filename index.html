@@ -11,6 +11,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 <body>
     <!-- Hero Header -->
@@ -168,6 +169,51 @@
                             <input type="checkbox" name="isSold" id="is-sold-checkbox">
                             <span>Verkocht</span>
                         </label>
+                        
+                        <!-- Sale Information (only visible when sold) -->
+                        <div id="sale-fields" class="sale-fields" hidden>
+                            <h4 class="sale-fields-title">Verkoop Informatie</h4>
+                            <div class="sale-fields-grid">
+                                <label>
+                                    <span>Verkocht Datum</span>
+                                    <input type="date" name="soldDate">
+                                </label>
+                                <label>
+                                    <span>Verkocht Prijs (€)</span>
+                                    <input type="number" name="soldPrice" step="0.01" min="0" placeholder="Verkoopprijs">
+                                </label>
+                                <label>
+                                    <span>Verzendkosten (€)</span>
+                                    <input type="number" name="shippingCost" step="0.01" min="0" placeholder="Shipping costs">
+                                </label>
+                                <label>
+                                    <span>Verkocht Aan</span>
+                                    <input type="text" name="soldTo" placeholder="Koper naam">
+                                </label>
+                                <label>
+                                    <span>Locatie/Land</span>
+                                    <input type="text" name="soldLocation" placeholder="Stad, Land">
+                                </label>
+                                <label>
+                                    <span>Verkoop Kanaal</span>
+                                    <select name="salesChannel">
+                                        <option value="">Selecteer kanaal...</option>
+                                        <option value="website">Website</option>
+                                        <option value="facebook">Facebook</option>
+                                        <option value="ebay">eBay</option>
+                                        <option value="catawiki">Catawiki</option>
+                                        <option value="marktplaats">Marktplaats</option>
+                                        <option value="direct">Direct Contact</option>
+                                        <option value="other">Anders</option>
+                                    </select>
+                                </label>
+                                <label class="sale-notes-label">
+                                    <span>Notities</span>
+                                    <textarea name="saleNotes" rows="3" placeholder="Extra info over de verkoop..."></textarea>
+                                </label>
+                            </div>
+                        </div>
+                        
                         <label class="file-label">
                             <span>Foto's</span>
                             <input type="file" id="images" name="images" accept="image/*" multiple>
@@ -187,6 +233,97 @@
                         <option value="">Laden...</option>
                     </select>
                 </section>
+            </section>
+
+            <!-- Sales Dashboard (Admin Only) -->
+            <section class="sales-dashboard" id="sales-dashboard" hidden>
+                <div class="panel-header">
+                    <h2>📊 Verkoop Dashboard</h2>
+                    <p>Overzicht van alle verkopen en statistieken</p>
+                </div>
+                
+                <!-- Summary Statistics -->
+                <div class="dashboard-stats">
+                    <div class="dashboard-stat-card">
+                        <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                        <div class="stat-details">
+                            <div class="stat-value" id="total-sold">0</div>
+                            <div class="stat-label">Verkochte Items</div>
+                        </div>
+                    </div>
+                    <div class="dashboard-stat-card">
+                        <div class="stat-icon success"><i class="fas fa-euro-sign"></i></div>
+                        <div class="stat-details">
+                            <div class="stat-value">€<span id="total-revenue">0</span></div>
+                            <div class="stat-label">Totale Omzet</div>
+                        </div>
+                    </div>
+                    <div class="dashboard-stat-card">
+                        <div class="stat-icon warning"><i class="fas fa-truck"></i></div>
+                        <div class="stat-details">
+                            <div class="stat-value">€<span id="total-shipping">0</span></div>
+                            <div class="stat-label">Verzendkosten</div>
+                        </div>
+                    </div>
+                    <div class="dashboard-stat-card">
+                        <div class="stat-icon profit"><i class="fas fa-chart-line"></i></div>
+                        <div class="stat-details">
+                            <div class="stat-value profit-loss" id="total-profit">€0</div>
+                            <div class="stat-label">Winst/Verlies</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Row -->
+                <div class="dashboard-charts">
+                    <div class="chart-card">
+                        <h3>Verkopen per Maand</h3>
+                        <canvas id="sales-per-month-chart"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Verkoop Kanalen</h3>
+                        <canvas id="sales-channels-chart"></canvas>
+                    </div>
+                </div>
+
+                <div class="dashboard-charts">
+                    <div class="chart-card">
+                        <h3>Winst/Verlies Analyse</h3>
+                        <canvas id="profit-loss-chart"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Top 5 Meest Winstgevende</h3>
+                        <div id="top-profitable-list" class="top-list"></div>
+                    </div>
+                </div>
+
+                <!-- Sales Table -->
+                <div class="dashboard-table-wrapper">
+                    <h3>Recente Verkopen</h3>
+                    <table class="sales-table" id="sales-table">
+                        <thead>
+                            <tr>
+                                <th>Datum</th>
+                                <th>Item</th>
+                                <th>Jaar</th>
+                                <th>Koper</th>
+                                <th>Locatie</th>
+                                <th>Kanaal</th>
+                                <th>Origineel</th>
+                                <th>Verkocht</th>
+                                <th>Verzend</th>
+                                <th>Winst</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sales-table-body">
+                            <tr>
+                                <td colspan="10" style="text-align: center; padding: 40px;">
+                                    Geen verkochte items gevonden
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </section>
 
         <div class="loading" id="loading">

@@ -38,6 +38,27 @@ export class DiecastModel {
 	@Column({ default: false })
 	isSold!: boolean;
 
+	@Column({ type: 'timestamp', nullable: true })
+	soldDate!: Date | null;
+
+	@Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
+	soldPrice!: string | null;
+
+	@Column({ nullable: true })
+	soldTo!: string | null;
+
+	@Column({ nullable: true })
+	soldLocation!: string | null;
+
+	@Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
+	shippingCost!: string | null;
+
+	@Column({ type: 'text', nullable: true })
+	saleNotes!: string | null;
+
+	@Column({ nullable: true })
+	salesChannel!: string | null;
+
 	@ManyToMany(() => Driver, driver => driver.models)
 	drivers!: Driver[];
 

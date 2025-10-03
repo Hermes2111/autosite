@@ -9,10 +9,24 @@ export function setupAdminForm(api, auth) {
   const editSection = document.getElementById('admin-edit-section');
   const modelSelect = document.getElementById('admin-model-select');
   const deleteButton = document.getElementById('admin-delete');
+  const isSoldCheckbox = document.getElementById('is-sold-checkbox');
+  const saleFields = document.getElementById('sale-fields');
 
   let editingId = null;
 
   if (!panel || !form) return {};
+
+  // Toggle sale fields visibility based on isSold checkbox
+  if (isSoldCheckbox && saleFields) {
+    isSoldCheckbox.addEventListener('change', () => {
+      saleFields.hidden = !isSoldCheckbox.checked;
+      
+      // Set soldDate to today if checked and empty
+      if (isSoldCheckbox.checked && form.soldDate && !form.soldDate.value) {
+        form.soldDate.value = new Date().toISOString().split('T')[0];
+      }
+    });
+  }
 
   async function refreshModelList() {
     if (!editSection) return;
@@ -53,7 +67,25 @@ export function setupAdminForm(api, auth) {
       form.numbers.value = model.numbers || '';
       form.price.value = model.price || '';
       if (form.teamId) form.teamId.value = model.teamId || '';
-      if (form.isSold) form.isSold.checked = model.isSold || false;
+      if (form.isSold) {
+        form.isSold.checked = model.isSold || false;
+        // Toggle sale fields visibility
+        if (saleFields) {
+          saleFields.hidden = !model.isSold;
+        }
+      }
+      
+      // Load sale data if sold
+      if (model.isSold) {
+        if (form.soldDate) form.soldDate.value = model.soldDate ? new Date(model.soldDate).toISOString().split('T')[0] : '';
+        if (form.soldPrice) form.soldPrice.value = model.soldPrice || '';
+        if (form.soldTo) form.soldTo.value = model.soldTo || '';
+        if (form.soldLocation) form.soldLocation.value = model.soldLocation || '';
+        if (form.shippingCost) form.shippingCost.value = model.shippingCost || '';
+        if (form.saleNotes) form.saleNotes.value = model.saleNotes || '';
+        if (form.salesChannel) form.salesChannel.value = model.salesChannel || '';
+      }
+      
       feedback.textContent = 'Model geladen. Je kan nu wijzigingen opslaan.';
       feedback.className = 'form-feedback';
     } catch (err) {
@@ -100,6 +132,17 @@ export function setupAdminForm(api, auth) {
       
       // Add isSold as boolean
       formData.set('isSold', form.isSold.checked);
+      
+      // Clear sale data if not sold
+      if (!form.isSold.checked) {
+        formData.delete('soldDate');
+        formData.delete('soldPrice');
+        formData.delete('soldTo');
+        formData.delete('soldLocation');
+        formData.delete('shippingCost');
+        formData.delete('saleNotes');
+        formData.delete('salesChannel');
+      }
 
       if (editingId) {
         await api.postForm(`/admin/models/${editingId}`, formData, 'PATCH');
