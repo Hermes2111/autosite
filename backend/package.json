@@ -1,6 +1,7 @@
 {
   "name": "autosite-backend",
   "version": "1.0.0",
+  "description": "Backend API for Autosite diecast model collection",
   "private": true,
   "engines": {
     "node": ">=20"

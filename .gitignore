@@ -1,6 +1,36 @@
-# Backend
+# Dependencies
+node_modules/
 backend/node_modules/
+
+# Environment variables
+.env
+.env.local
 backend/.env
 backend/.env.local
+
+# Build output
 backend/dist/
+backend/tsconfig.build.tsbuildinfo
+
+# Credentials & sensitive files
 backend/credentials.json
+
+# Uploads
+backend/uploads/
+uploads/
+
+# IDE & OS files
+.DS_Store
+.vscode/
+.idea/
+
+# Python virtual environment
+.venv/
+venv/
+
+# Docker volumes
+docker/
+
+# Temporary files
+*.log
+*.tmp

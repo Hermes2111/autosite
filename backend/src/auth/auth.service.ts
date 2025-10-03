@@ -48,7 +48,7 @@ export class AuthService {
 		return this.signUser(user.id, user.roles, user);
 	}
 
-	private async signUser(userId: number, roles: string[], profile: any) {
+	private async signUser(userId: number, roles: string[], profile: PublicUser) {
 		const payload = { sub: String(userId), roles };
 		const token = await this.jwt.signAsync(payload, {
 			audience: JWT_AUDIENCE,
@@ -59,4 +59,3 @@ export class AuthService {
 		return { token, user: profile };
 	}
 }
-

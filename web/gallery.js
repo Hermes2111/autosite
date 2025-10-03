@@ -47,7 +47,6 @@ export async function fetchModels() {
     allModels = response?.items ?? [];
     return allModels;
   } catch (error) {
-    console.error('Error fetching models:', error);
     allModels = [];
     throw error;
   }
@@ -64,14 +63,12 @@ async function fetchWatchlist() {
     const items = await apiClient.get('/watchlist');
     watchlist = new Set(items.map(item => item.model.id));
   } catch (err) {
-    console.warn('Kon watchlist niet ophalen', err);
     watchlist = new Set();
   }
 }
 
 export async function renderModels() {
   if (!loadingElement || !collectionContainer) {
-    console.error('Required DOM elements not found');
     return;
   }
   
@@ -86,7 +83,6 @@ export async function renderModels() {
     updateStatistics(filteredModels);
     drawCards(filteredModels);
   } catch (error) {
-    console.error('Error rendering models:', error);
     collectionContainer.innerHTML = `
       <div style="grid-column: 1 / -1; text-align: center; padding: 64px 24px;">
         <i class="fas fa-exclamation-triangle" style="font-size: 4rem; color: var(--danger, #e74c3c); margin-bottom: 24px;"></i>
@@ -222,8 +218,9 @@ function drawCards(models) {
       actions.appendChild(viewBtn);
     }
 
+    const contactEmail = 'hermesvansteenbrugge1@gmail.com';
     const contactLink = document.createElement('a');
-    contactLink.href = `mailto:hermesvansteenbrugge1@gmail.com?subject=Vraag over ${model.what}`;
+    contactLink.href = `mailto:${contactEmail}?subject=Vraag over ${encodeURIComponent(model.what)}`;
     contactLink.className = 'btn btn-primary';
     contactLink.innerHTML = '<i class="fas fa-envelope"></i> Contact';
     actions.appendChild(contactLink);
@@ -271,7 +268,6 @@ function createWatchlistButton(modelId) {
         button.innerHTML = '<i class="fas fa-star"></i>In watchlist';
       }
     } catch (err) {
-      console.error(err);
       alert('Actie mislukt. Probeer opnieuw.');
     }
   });
@@ -358,7 +354,6 @@ function enableAdminDrop(card, model) {
         renderModels();
       }, 400);
     } catch (err) {
-      console.error(err);
       card.classList.remove('drop-uploading');
       card.classList.add('drop-error');
       icon.className = 'fas fa-times';
@@ -596,9 +591,10 @@ window.addEventListener('mousemove', (event) => {
   modalImage.style.transform = `translate(${currentPan.x}px, ${currentPan.y}px) scale(${currentZoom})`;
 });
 
-// ensure modal close resets image
+// Ensure modal close resets image
 modal.addEventListener('transitionend', () => {
   if (modal.hidden) {
     resetZoom();
   }
 });
+

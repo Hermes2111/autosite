@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { HealthModule } from './health/health.module';
@@ -9,8 +9,6 @@ import { DriverModule } from './driver/driver.module';
 import { AuthModule } from './auth/auth.module';
 import { AdminModule } from './admin/admin.module';
 import { WatchlistModule } from './watchlist/watchlist.module';
-import * as cookieParser from 'cookie-parser';
-import { ConfigService } from '@nestjs/config';
 
 @Module({
 	imports: [
@@ -38,12 +36,4 @@ import { ConfigService } from '@nestjs/config';
 		WatchlistModule,
 	],
 })
-export class AppModule implements NestModule {
-	constructor(private readonly configService: ConfigService) {}
-
-	configure(consumer: MiddlewareConsumer) {
-		const secret = this.configService.get('COOKIE_SECRET') ?? 'autosite-cookie-secret';
-		consumer.apply(cookieParser(secret)).forRoutes('*');
-	}
-}
-
+export class AppModule {}

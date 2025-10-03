@@ -77,6 +77,7 @@ export class ApiClient {
 
       return response.json();
     } catch (error) {
+      // Re-throw error for caller to handle
       throw error;
     }
   }

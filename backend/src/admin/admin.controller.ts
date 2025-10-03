@@ -41,4 +41,3 @@ export class AdminController {
 		return this.adminService.deleteModel(Number(id));
 	}
 }
-

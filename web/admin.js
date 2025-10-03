@@ -23,8 +23,7 @@ export function setupAdminForm(api, auth) {
       modelSelect.innerHTML = '<option value="">Selecteer een model om te bewerken</option>' +
         items.map(model => `<option value="${model.id}">${model.what} (${model.year})</option>`).join('');
     } catch (err) {
-      console.error('Kan model-lijst niet laden', err);
-      modelSelect.innerHTML = '<option value="">Fout bij laden</option>';
+      modelSelect.innerHTML = '<option value="">Fout bij laden modellen</option>';
     }
   }
 
@@ -57,7 +56,6 @@ export function setupAdminForm(api, auth) {
       feedback.textContent = 'Model geladen. Je kan nu wijzigingen opslaan.';
       feedback.className = 'form-feedback';
     } catch (err) {
-      console.error(err);
       feedback.textContent = 'Kan model niet laden.';
       feedback.className = 'form-feedback error';
     }
@@ -77,7 +75,6 @@ export function setupAdminForm(api, auth) {
       await renderModels();
       await refreshModelList();
     } catch (err) {
-      console.error(err);
       feedback.textContent = 'Verwijderen mislukt.';
       feedback.className = 'form-feedback error';
     }
@@ -114,7 +111,6 @@ export function setupAdminForm(api, auth) {
       await renderModels();
       await refreshModelList();
     } catch (err) {
-      console.error(err);
       feedback.textContent = 'Opslaan mislukt. Controleer de invoer.';
       feedback.classList.add('error');
     }
@@ -134,9 +130,10 @@ export function setupAdminForm(api, auth) {
       panel.hidden = false;
       refreshModelList();
     },
-    hide() {
+      hide() {
       panel.hidden = true;
       setEditingState(null);
     },
   };
 }
+

@@ -17,7 +17,7 @@ async function bootstrap() {
     prefix: '/uploads',
   });
   await app.listen(port);
+  console.log(`🚀 Server is running on http://localhost:${port}/api`);
 }
+
 bootstrap();
-
-

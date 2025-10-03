@@ -31,4 +31,3 @@ export class AdminService {
     return this.diecastService.remove(id);
   }
 }
-

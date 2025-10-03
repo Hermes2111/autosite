@@ -1,7 +1,9 @@
 version: '3.9'
+
 services:
   db:
-    image: postgres:16
+    image: postgres:16-alpine
+    container_name: autosite-db
     restart: unless-stopped
     environment:
       POSTGRES_DB: autosite
@@ -11,11 +13,18 @@ services:
       - "5432:5432"
     volumes:
       - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U devusr -d autosite"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   api:
     build:
       context: ./backend
       target: prod
+    container_name: autosite-api
+    restart: unless-stopped
     env_file:
       - ./backend/.env
     environment:
@@ -27,7 +36,8 @@ services:
       PORT: 3000
       PUBLIC_UPLOAD_BASE_URL: http://frontend/uploads
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     expose:
       - "3000"
     volumes:
@@ -37,6 +47,8 @@ services:
     build:
       context: .
       dockerfile: docker/frontend/Dockerfile
+    container_name: autosite-frontend
+    restart: unless-stopped
     depends_on:
       - api
     ports:
@@ -45,5 +57,4 @@ services:
       - ./uploads:/usr/share/nginx/html/uploads
 
 volumes:
-  pg_data: {}
-
+  pg_data:
