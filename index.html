@@ -81,6 +81,10 @@
                     <option value="price-desc" data-i18n="filter.sortPriceHigh">Prijs (hoog-laag)</option>
                     <option value="price-asc" data-i18n="filter.sortPriceLow">Prijs (laag-hoog)</option>
                 </select>
+                <label class="sold-filter-toggle">
+                    <input type="checkbox" id="hide-sold-filter" checked>
+                    <span>Verberg verkochte items</span>
+                </label>
                 </div>
             </div>
         </div>
@@ -159,6 +163,10 @@
                         <label>
                             <span>Team ID</span>
                             <input type="number" name="teamId" min="1" placeholder="Optioneel">
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="isSold" id="is-sold-checkbox">
+                            <span>Verkocht</span>
                         </label>
                         <label class="file-label">
                             <span>Foto's</span>

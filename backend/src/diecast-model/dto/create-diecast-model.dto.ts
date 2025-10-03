@@ -1,4 +1,4 @@
-import { IsArray, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsBoolean, IsOptional, IsString } from 'class-validator';
 
 export class CreateDiecastModelDto {
 	@IsString()
@@ -30,5 +30,9 @@ export class CreateDiecastModelDto {
 	@IsArray()
 	@IsString({ each: true })
 	imageUrls?: string[];
+
+	@IsOptional()
+	@IsBoolean()
+	isSold?: boolean;
 }
 

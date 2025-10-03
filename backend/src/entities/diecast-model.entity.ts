@@ -35,6 +35,9 @@ export class DiecastModel {
 	@Column('text', { array: true, nullable: true, default: () => "'{}'" })
 	imageUrls!: string[] | null;
 
+	@Column({ default: false })
+	isSold!: boolean;
+
 	@ManyToMany(() => Driver, driver => driver.models)
 	drivers!: Driver[];
 

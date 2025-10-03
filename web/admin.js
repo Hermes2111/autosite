@@ -53,6 +53,7 @@ export function setupAdminForm(api, auth) {
       form.numbers.value = model.numbers || '';
       form.price.value = model.price || '';
       if (form.teamId) form.teamId.value = model.teamId || '';
+      if (form.isSold) form.isSold.checked = model.isSold || false;
       feedback.textContent = 'Model geladen. Je kan nu wijzigingen opslaan.';
       feedback.className = 'form-feedback';
     } catch (err) {
@@ -96,6 +97,9 @@ export function setupAdminForm(api, auth) {
       if (!imagesInput.files.length) {
         formData.delete('images');
       }
+      
+      // Add isSold as boolean
+      formData.set('isSold', form.isSold.checked);
 
       if (editingId) {
         await api.postForm(`/admin/models/${editingId}`, formData, 'PATCH');

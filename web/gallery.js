@@ -6,6 +6,7 @@ const searchInput = document.getElementById('search-input');
 const yearFilter = document.getElementById('year-filter');
 const scaleFilter = document.getElementById('scale-filter');
 const sortBy = document.getElementById('sort-by');
+const hideSoldFilter = document.getElementById('hide-sold-filter');
 const totalItemsElement = document.getElementById('total-items');
 const uniqueYearsElement = document.getElementById('unique-years');
 const totalValueElement = document.getElementById('total-value');
@@ -176,6 +177,15 @@ function drawCards(models) {
       placeholder.className = 'no-image';
       placeholder.innerHTML = '<i class="fas fa-car-side"></i>';
       imageWrapper.appendChild(placeholder);
+    }
+
+    // Add SOLD badge if item is sold
+    if (model.isSold) {
+      const soldBadge = document.createElement('div');
+      soldBadge.className = 'sold-badge';
+      soldBadge.innerHTML = '<i class="fas fa-check-circle"></i> VERKOCHT';
+      imageWrapper.appendChild(soldBadge);
+      card.classList.add('sold');
     }
 
     const body = document.createElement('div');
@@ -386,6 +396,7 @@ export function setupFilters(renderFn, auth, admin) {
     const selectedYear = yearFilter.value;
     const selectedScale = scaleFilter.value;
     const sort = sortBy.value;
+    const hideSold = hideSoldFilter ? hideSoldFilter.checked : false;
 
     filteredModels = allModels.filter(model => {
       const matchesSearch = !searchTerm ||
@@ -395,7 +406,9 @@ export function setupFilters(renderFn, auth, admin) {
 
       const matchesYear = !selectedYear || model.year === selectedYear;
       const matchesScale = !selectedScale || (model.scale && model.scale.includes(selectedScale));
-      return matchesSearch && matchesYear && matchesScale;
+      const matchesSold = !hideSold || !model.isSold;
+      
+      return matchesSearch && matchesYear && matchesScale && matchesSold;
     });
 
     switch (sort) {
@@ -417,6 +430,9 @@ export function setupFilters(renderFn, auth, admin) {
   yearFilter.addEventListener('change', filterModels);
   scaleFilter.addEventListener('change', filterModels);
   sortBy.addEventListener('change', filterModels);
+  if (hideSoldFilter) {
+    hideSoldFilter.addEventListener('change', filterModels);
+  }
 
   closeModal.addEventListener('click', closeImageModal);
   modalOverlay.addEventListener('click', closeImageModal);

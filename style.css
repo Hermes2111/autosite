@@ -346,6 +346,37 @@ body {
     box-shadow: 0 0 0 1px var(--accent-green);
 }
 
+.sold-filter-toggle {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.sold-filter-toggle:hover {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: var(--accent-yellow);
+}
+
+.sold-filter-toggle input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: var(--accent-yellow);
+}
+
+.sold-filter-toggle span {
+    color: var(--text-primary);
+    font-size: 0.875rem;
+    font-weight: 300;
+}
+
 /* Statistics */
 .stats-section {
     padding: 64px 0;
@@ -594,6 +625,84 @@ body {
     align-items: center;
     gap: 6px;
     letter-spacing: 0.5px;
+}
+
+/* Sold Badge */
+.sold-badge {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+    color: white;
+    padding: 16px 32px;
+    border-radius: 12px;
+    font-size: 1.25rem;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    box-shadow: 0 8px 32px rgba(231, 76, 60, 0.6);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    z-index: 10;
+    animation: soldPulse 2s ease-in-out infinite;
+}
+
+@keyframes soldPulse {
+    0%, 100% {
+        transform: translate(-50%, -50%) scale(1);
+        box-shadow: 0 8px 32px rgba(231, 76, 60, 0.6);
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.05);
+        box-shadow: 0 12px 40px rgba(231, 76, 60, 0.8);
+    }
+}
+
+.sold-badge i {
+    font-size: 1.5rem;
+}
+
+/* Sold Card Styling */
+.model-card.sold {
+    position: relative;
+}
+
+.model-card.sold::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.3);
+    pointer-events: none;
+    z-index: 5;
+}
+
+.model-card.sold .card-image-wrapper::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 5;
+}
+
+.model-card.sold .card-image {
+    filter: grayscale(50%) brightness(0.7);
+}
+
+.model-card.sold:hover .card-image {
+    filter: grayscale(30%) brightness(0.8);
+}
+
+.model-card.sold .card-body {
+    opacity: 0.7;
 }
 
 .card-body {
@@ -1237,6 +1346,36 @@ body {
     gap: 8px;
     color: var(--text-secondary);
     font-size: 0.85rem;
+}
+
+.admin-form .checkbox-label {
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+.admin-form .checkbox-label:hover {
+    background: rgba(0, 0, 0, 0.3);
+    border-color: var(--accent-yellow);
+}
+
+.admin-form .checkbox-label input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: var(--accent-yellow);
+}
+
+.admin-form .checkbox-label span {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-primary);
 }
 
 .admin-form input[type="text"],
