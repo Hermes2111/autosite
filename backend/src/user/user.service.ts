@@ -21,11 +21,13 @@ export class UserService {
     }
 
     const { password, roles, isActive = true, ...rest } = createUserDto;
+    const finalPassword = password ?? Math.random().toString(36).slice(2);
+
     const user = this.userRepository.create({
       ...rest,
       isActive,
       roles: roles && roles.length > 0 ? roles : ['user'],
-      passwordHash: await hashPassword(password),
+      passwordHash: await hashPassword(finalPassword),
     });
 
     const saved = await this.userRepository.save(user);

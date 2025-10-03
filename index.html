@@ -168,7 +168,7 @@
     </main>
 
     <!-- Image Gallery Modal -->
-    <div class="modal" id="image-modal">
+    <div class="modal" id="image-modal" hidden>
         <div class="modal-overlay" id="modal-overlay"></div>
         <div class="modal-content">
             <button class="modal-close" id="close-modal">
@@ -179,6 +179,7 @@
                 <div class="modal-counter" id="modal-counter">1 / 1</div>
             </div>
             <div class="modal-tools">
+                <button class="modal-tool" id="rotate-toggle" title="Automatisch draaien"><i class="fas fa-sync-alt"></i></button>
                 <button class="modal-tool" id="zoom-out" title="Zoom uit"><i class="fas fa-search-minus"></i></button>
                 <button class="modal-tool" id="zoom-reset" title="Reset zoom"><i class="fas fa-compress"></i></button>
                 <button class="modal-tool" id="zoom-in" title="Zoom in"><i class="fas fa-search-plus"></i></button>
@@ -238,50 +239,72 @@
         <div class="auth-overlay" id="auth-overlay"></div>
         <div class="auth-dialog">
             <button class="auth-close" id="auth-close"><i class="fas fa-times"></i></button>
-            <h2>Inloggen</h2>
-            <form id="login-form" class="auth-form">
+            
+            <div class="auth-tabs">
+                <button type="button" class="auth-tab active" id="tab-login">Inloggen</button>
+                <button type="button" class="auth-tab" id="tab-register">Registreren</button>
+            </div>
+
+            <!-- Login Form -->
+            <div id="login-panel" class="auth-panel">
+                <div class="auth-header">
+                    <h2>Welkom terug</h2>
+                    <p>Log in met je account</p>
+                </div>
+                
+                <form id="login-form" class="auth-form">
+                    <label>
+                        <span>E-mailadres</span>
+                        <input type="email" name="email" required placeholder="jouw@email.com">
+                    </label>
+                    <label>
+                        <span>Wachtwoord</span>
+                        <input type="password" name="password" required placeholder="••••••••">
+                    </label>
+                    <button type="submit" class="btn btn-primary">Inloggen</button>
+                    <p class="auth-feedback" id="login-feedback"></p>
+                </form>
+            </div>
+
+            <!-- Register Form -->
+            <div id="register-panel" class="auth-panel" hidden>
+                <div class="auth-header">
+                    <h2>Account aanmaken</h2>
+                    <p>Maak een nieuw account aan</p>
+                </div>
+                
+                <form id="register-form" class="auth-form">
+                    <label>
+                        <span>Naam</span>
+                        <input type="text" name="name" required placeholder="Jouw naam">
+                    </label>
+                    <label>
+                        <span>E-mailadres</span>
+                        <input type="email" name="email" required placeholder="jouw@email.com">
+                    </label>
+                    <label>
+                        <span>Wachtwoord</span>
+                        <input type="password" name="password" required minlength="8" placeholder="Min. 8 karakters">
+                    </label>
+                    <button type="submit" class="btn btn-primary">Maak account</button>
+                    <p class="auth-feedback" id="register-feedback"></p>
+                </form>
+            </div>
+
+            <!-- Advanced settings (collapsed by default) -->
+            <details class="backend-config">
+                <summary>Geavanceerde instellingen</summary>
                 <label>
-                    <span>E-mailadres</span>
-                    <input type="email" name="email" required autocomplete="username">
+                    <span>Backend URL</span>
+                    <input type="text" id="backend-url" placeholder="http://localhost:3000">
                 </label>
-                <label>
-                    <span>Wachtwoord</span>
-                    <input type="password" name="password" required autocomplete="current-password">
+                <label class="remember-backend">
+                    <input type="checkbox" id="remember-backend">
+                    <span>Onthoud URL</span>
                 </label>
-                    <div class="backend-config">
-                        <label>
-                            <span>Backend URL</span>
-                            <input type="text" id="backend-url" placeholder="http://localhost:3000" autocomplete="off">
-                        </label>
-                        <label class="remember-backend">
-                            <input type="checkbox" id="remember-backend">
-                            <span>Onthoud URL</span>
-                        </label>
-                    </div>
-                <button type="submit" class="btn btn-primary">Log in</button>
-                <p class="auth-feedback" id="login-feedback"></p>
-            </form>
-            <div class="auth-switch">
-                <p>Nog geen account? <button type="button" id="toggle-register">Account maken</button></p>
-                            </div>
-            <form id="register-form" class="auth-form" hidden>
-                <label>
-                    <span>Naam</span>
-                    <input type="text" name="name" required autocomplete="name">
-                </label>
-                <label>
-                    <span>E-mailadres</span>
-                    <input type="email" name="email" required autocomplete="email">
-                </label>
-                <label>
-                    <span>Wachtwoord</span>
-                    <input type="password" name="password" required autocomplete="new-password" minlength="8">
-                </label>
-                <button type="submit" class="btn btn-primary">Registreer</button>
-                <p class="auth-feedback" id="register-feedback"></p>
-            </form>
-                            </div>
-                        </div>
+            </details>
+        </div>
+    </div>
 
     <script src="script.js" type="module"></script>
 </body>

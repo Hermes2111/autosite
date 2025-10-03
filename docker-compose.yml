@@ -15,7 +15,7 @@ services:
   api:
     build:
       context: ./backend
-      target: dev
+      target: prod
     env_file:
       - ./backend/.env
     environment:
@@ -25,13 +25,24 @@ services:
       DB_PASSWORD: devpwd
       DB_NAME: autosite
       PORT: 3000
+      PUBLIC_UPLOAD_BASE_URL: http://frontend/uploads
     depends_on:
       - db
-    ports:
-      - "3000:3000"
+    expose:
+      - "3000"
     volumes:
-      - ./backend:/app
-      - /app/node_modules
+      - ./uploads:/app/uploads
+
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/frontend/Dockerfile
+    depends_on:
+      - api
+    ports:
+      - "5500:80"
+    volumes:
+      - ./uploads:/usr/share/nginx/html/uploads
 
 volumes:
   pg_data: {}

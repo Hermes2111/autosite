@@ -23,6 +23,7 @@ const navNext = document.getElementById('nav-next');
 const zoomInBtn = document.getElementById('zoom-in');
 const zoomOutBtn = document.getElementById('zoom-out');
 const zoomResetBtn = document.getElementById('zoom-reset');
+const rotateToggleBtn = document.getElementById('rotate-toggle');
 
 let allModels = [];
 let filteredModels = [];
@@ -34,15 +35,22 @@ let currentZoom = 1;
 let currentPan = { x: 0, y: 0 };
 let isPanning = false;
 let panStart = { x: 0, y: 0 };
+let rotateInterval = null;
 
 export function setAuthGetter(fn) {
   authGetter = fn;
 }
 
 export async function fetchModels() {
-  const { items } = await apiClient.get('/diecast-models');
-  allModels = items ?? [];
-  return allModels;
+  try {
+    const response = await apiClient.get('/diecast-models');
+    allModels = response?.items ?? [];
+    return allModels;
+  } catch (error) {
+    console.error('Error fetching models:', error);
+    allModels = [];
+    throw error;
+  }
 }
 
 async function fetchWatchlist() {
@@ -62,14 +70,37 @@ async function fetchWatchlist() {
 }
 
 export async function renderModels() {
+  if (!loadingElement || !collectionContainer) {
+    console.error('Required DOM elements not found');
+    return;
+  }
+  
   loadingElement.style.display = 'block';
-  await fetchModels();
-  await fetchWatchlist();
-  filteredModels = [...allModels];
-  updateFilters();
-  updateStatistics(filteredModels);
-  drawCards(filteredModels);
-  loadingElement.style.display = 'none';
+  collectionContainer.innerHTML = '';
+  
+  try {
+    await fetchModels();
+    await fetchWatchlist();
+    filteredModels = [...allModels];
+    updateFilters();
+    updateStatistics(filteredModels);
+    drawCards(filteredModels);
+  } catch (error) {
+    console.error('Error rendering models:', error);
+    collectionContainer.innerHTML = `
+      <div style="grid-column: 1 / -1; text-align: center; padding: 64px 24px;">
+        <i class="fas fa-exclamation-triangle" style="font-size: 4rem; color: var(--danger, #e74c3c); margin-bottom: 24px;"></i>
+        <h3 style="font-size: 1.75rem; margin-bottom: 12px;">Er is iets misgegaan</h3>
+        <p style="color: var(--text-secondary);">Kan geen verbinding maken met de API. Controleer of de backend draait op <code>http://localhost:3000</code></p>
+        <p style="color: var(--text-secondary); margin-top: 12px;">Error: ${error.message}</p>
+        <button onclick="location.reload()" style="margin-top: 24px; padding: 12px 24px; background: var(--primary, #3498db); color: white; border: none; border-radius: 8px; cursor: pointer;">
+          Probeer opnieuw
+        </button>
+      </div>
+    `;
+  } finally {
+    loadingElement.style.display = 'none';
+  }
 }
 
 function updateFilters() {
@@ -79,6 +110,7 @@ function updateFilters() {
 
 function drawCards(models) {
   collectionContainer.innerHTML = '';
+  
   if (models.length === 0) {
     collectionContainer.innerHTML = `
       <div style="grid-column: 1 / -1; text-align: center; padding: 64px 24px;">
@@ -109,7 +141,11 @@ function drawCards(models) {
       img.className = 'card-image';
       img.loading = 'lazy';
       imageWrapper.appendChild(img);
-      imageWrapper.addEventListener('click', () => openImageModal(images, model.what));
+
+      imageWrapper.addEventListener('click', (event) => {
+        event.stopPropagation();
+        openImageModal(images, model.what);
+      });
 
       if (imageCount > 1) {
         const grid = document.createElement('div');
@@ -126,7 +162,10 @@ function drawCards(models) {
           tile.dataset.index = String(index);
           grid.appendChild(tile);
         });
-        grid.addEventListener('click', () => openImageModal(images, model.what));
+        grid.addEventListener('click', (event) => {
+          event.stopPropagation();
+          openImageModal(images, model.what);
+        });
         imageWrapper.appendChild(grid);
       }
 
@@ -386,21 +425,35 @@ export function setupFilters(renderFn, auth, admin) {
 
   closeModal.addEventListener('click', closeImageModal);
   modalOverlay.addEventListener('click', closeImageModal);
-  navPrev.addEventListener('click', prevImage);
-  navNext.addEventListener('click', nextImage);
+  navPrev.addEventListener('click', () => {
+    stopRotate();
+    prevImage();
+  });
+  navNext.addEventListener('click', () => {
+    stopRotate();
+    nextImage();
+  });
 
   document.addEventListener('keydown', (event) => {
     if (modal.hidden) return;
     if (event.key === 'Escape') closeImageModal();
-    if (event.key === 'ArrowLeft') prevImage();
-    if (event.key === 'ArrowRight') nextImage();
+    if (event.key === 'ArrowLeft') {
+      stopRotate();
+      prevImage();
+    }
+    if (event.key === 'ArrowRight') {
+      stopRotate();
+      nextImage();
+    }
   });
 }
 
 function openImageModal(images, title) {
+  if (!images.length) return;
   currentImages = images;
   currentImageIndex = 0;
   modalTitle.textContent = title;
+  stopRotate();
   resetZoom();
   updateModalDisplay();
   modal.hidden = false;
@@ -430,6 +483,18 @@ function updateModalDisplay() {
   });
 }
 
+function applyZoom() {
+  modalImage.style.transform = `translate(${currentPan.x}px, ${currentPan.y}px) scale(${currentZoom})`;
+  if (currentZoom > 1) {
+    modalImage.classList.add('zoomed');
+    modalImage.style.cursor = 'grab';
+  } else {
+    modalImage.classList.remove('zoomed');
+    modalImage.style.cursor = 'zoom-in';
+    currentPan = { x: 0, y: 0 };
+  }
+}
+
 function resetZoom() {
   currentZoom = 1;
   currentPan = { x: 0, y: 0 };
@@ -439,6 +504,7 @@ function resetZoom() {
 }
 
 function closeImageModal() {
+  stopRotate();
   modal.hidden = true;
   document.body.style.overflow = 'auto';
 }
@@ -462,6 +528,7 @@ function prevImage() {
 zoomInBtn?.addEventListener('click', () => {
   currentZoom = Math.min(currentZoom + 0.25, 4);
   applyZoom();
+  stopRotate();
 });
 
 zoomOutBtn?.addEventListener('click', () => {
@@ -469,30 +536,49 @@ zoomOutBtn?.addEventListener('click', () => {
   applyZoom();
 });
 
-zoomResetBtn?.addEventListener('click', resetZoom);
+zoomResetBtn?.addEventListener('click', () => {
+  resetZoom();
+  applyZoom();
+});
+
+rotateToggleBtn?.addEventListener('click', () => {
+  if (rotateInterval) {
+    stopRotate();
+  } else {
+    startRotate();
+  }
+});
+
+function startRotate() {
+  if (rotateInterval || currentImages.length < 2) return;
+  rotateToggleBtn.classList.add('active');
+  rotateInterval = setInterval(() => {
+    currentImageIndex = (currentImageIndex + 1) % currentImages.length;
+    updateModalDisplay();
+  }, 1500);
+}
+
+function stopRotate() {
+  if (!rotateInterval) return;
+  clearInterval(rotateInterval);
+  rotateInterval = null;
+  rotateToggleBtn.classList.remove('active');
+}
 
 modalImage?.addEventListener('wheel', (event) => {
   event.preventDefault();
   const delta = Math.sign(event.deltaY) * -0.1;
   currentZoom = Math.min(Math.max(1, currentZoom + delta), 4);
   applyZoom();
+  stopRotate();
 });
-
-function applyZoom() {
-  if (currentZoom === 1) {
-    resetZoom();
-    return;
-  }
-  modalImage.classList.add('zoomed');
-  modalImage.style.cursor = 'grab';
-  modalImage.style.transform = `translate(${currentPan.x}px, ${currentPan.y}px) scale(${currentZoom})`;
-}
 
 modalImage?.addEventListener('mousedown', (event) => {
   if (currentZoom === 1) return;
   isPanning = true;
   modalImage.style.cursor = 'grabbing';
   panStart = { x: event.clientX, y: event.clientY };
+  stopRotate();
 });
 
 window.addEventListener('mouseup', () => {
@@ -508,4 +594,11 @@ window.addEventListener('mousemove', (event) => {
   panStart = { x: event.clientX, y: event.clientY };
   currentPan = { x: currentPan.x + dx, y: currentPan.y + dy };
   modalImage.style.transform = `translate(${currentPan.x}px, ${currentPan.y}px) scale(${currentZoom})`;
+});
+
+// ensure modal close resets image
+modal.addEventListener('transitionend', () => {
+  if (modal.hidden) {
+    resetZoom();
+  }
 });

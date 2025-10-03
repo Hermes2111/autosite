@@ -2,18 +2,19 @@ import { IsArray, IsBoolean, IsEmail, IsOptional, IsString, MinLength } from 'cl
 
 export class CreateUserDto {
   @IsEmail()
-  email: string;
+  email!: string;
 
   @IsString()
-  name: string;
+  name!: string;
 
+  @IsOptional()
   @IsString()
   @MinLength(8)
-  password: string;
+  password?: string;
 
   @IsOptional()
   @IsBoolean()
-  isActive?: boolean = true;
+  isActive?: boolean;
 
   @IsOptional()
   @IsArray()

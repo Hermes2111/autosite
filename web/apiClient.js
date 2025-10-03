@@ -2,6 +2,11 @@ const detectApiBase = () => {
   const saved = localStorage.getItem('autosite.apiBase');
   if (saved) return saved;
 
+  // Default to localhost:3000 for local development
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    return 'http://localhost:3000/api';
+  }
+
   const { protocol, hostname } = window.location;
   const defaultPort = protocol === 'https:' ? 443 : 80;
   const backendPort = protocol === 'https:' ? defaultPort : 3000;
@@ -48,25 +53,32 @@ export class ApiClient {
       ? (this.token ? { Authorization: `Bearer ${this.token}` } : {})
       : { ...this.headers, ...(options.headers ?? {}) };
 
-    const response = await fetch(`${API_BASE}${path}`, {
-      ...options,
-      headers,
-    });
+    const url = `${API_BASE}${path}`;
 
-    if (response.status === 401) {
-      this.setToken(null);
+    try {
+      const response = await fetch(url, {
+        ...options,
+        headers,
+      });
+
+      if (response.status === 401) {
+        this.setToken(null);
+      }
+
+      if (!response.ok) {
+        const text = await response.text();
+        const errorMsg = text || `Request failed with status ${response.status}`;
+        throw new Error(errorMsg);
+      }
+
+      if (response.status === 204) {
+        return null;
+      }
+
+      return response.json();
+    } catch (error) {
+      throw error;
     }
-
-    if (!response.ok) {
-      const text = await response.text();
-      throw new Error(text || 'Request failed');
-    }
-
-    if (response.status === 204) {
-      return null;
-    }
-
-    return response.json();
   }
 
   get(path) {

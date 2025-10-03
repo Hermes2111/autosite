@@ -6,16 +6,26 @@ export function setupAuth(api) {
   const modal = document.getElementById('auth-modal');
   const overlay = document.getElementById('auth-overlay');
   const close = document.getElementById('auth-close');
+  const loginTab = document.getElementById('tab-login');
+  const registerTab = document.getElementById('tab-register');
+  const loginPanel = document.getElementById('login-panel');
+  const registerPanel = document.getElementById('register-panel');
   const loginForm = document.getElementById('login-form');
   const loginFeedback = document.getElementById('login-feedback');
   const registerForm = document.getElementById('register-form');
   const registerFeedback = document.getElementById('register-feedback');
-  const toggleRegister = document.getElementById('toggle-register');
-  const adminPanel = document.getElementById('admin-panel');
   const backendInput = document.getElementById('backend-url');
   const rememberBackend = document.getElementById('remember-backend');
+  const googleButton = document.getElementById('google-login');
+  const adminPanel = document.getElementById('admin-panel');
 
   let currentUser = null;
+  let activeTab = 'login';
+
+  if (modal) {
+    modal.classList.remove('visible');
+    modal.hidden = true;
+  }
 
   const savedBase = localStorage.getItem('autosite.apiBase');
   if (backendInput && savedBase) {
@@ -23,23 +33,89 @@ export function setupAuth(api) {
     if (rememberBackend) rememberBackend.checked = true;
   }
 
-  function openModal(showRegister = false) {
-    modal.hidden = false;
-    loginForm.hidden = showRegister;
-    registerForm.hidden = !showRegister;
-    loginFeedback.textContent = '';
-    registerFeedback.textContent = '';
+  function setTab(tab) {
+    activeTab = tab;
+    
+    // Clear feedback messages
+    if (loginFeedback) loginFeedback.textContent = '';
+    if (registerFeedback) registerFeedback.textContent = '';
+    
+    if (tab === 'login') {
+      // Update tab buttons
+      if (loginTab) {
+        loginTab.classList.add('active');
+        loginTab.setAttribute('aria-selected', 'true');
+      }
+      if (registerTab) {
+        registerTab.classList.remove('active');
+        registerTab.setAttribute('aria-selected', 'false');
+      }
+      
+      // Show login panel, hide register panel
+      if (loginPanel) {
+        loginPanel.hidden = false;
+        loginPanel.style.display = 'block';
+      }
+      if (registerPanel) {
+        registerPanel.hidden = true;
+        registerPanel.style.display = 'none';
+      }
+    } else {
+      // Update tab buttons
+      if (registerTab) {
+        registerTab.classList.add('active');
+        registerTab.setAttribute('aria-selected', 'true');
+      }
+      if (loginTab) {
+        loginTab.classList.remove('active');
+        loginTab.setAttribute('aria-selected', 'false');
+      }
+      
+      // Show register panel, hide login panel
+      if (registerPanel) {
+        registerPanel.hidden = false;
+        registerPanel.style.display = 'block';
+      }
+      if (loginPanel) {
+        loginPanel.hidden = true;
+        loginPanel.style.display = 'none';
+      }
+    }
+  }
+
+  function openModal(tab = 'login') {
+    setTab(tab);
+    if (modal) {
+      modal.hidden = false;
+      modal.classList.add('visible');
+    }
+    if (overlay) {
+      overlay.classList.add('visible');
+    }
   }
 
   function closeModal() {
-    modal.hidden = true;
+    if (modal) {
+      modal.classList.remove('visible');
+      modal.hidden = true;
+    }
+    if (overlay) {
+      overlay.classList.remove('visible');
+    }
+    if (loginFeedback) loginFeedback.textContent = '';
+    if (registerFeedback) registerFeedback.textContent = '';
   }
 
   function renderControls() {
+    if (!controls) return;
+    
     if (!currentUser) {
       controls.innerHTML = '<button class="btn btn-secondary" id="login-button">Inloggen</button>';
-      document.getElementById('login-button').addEventListener('click', () => openModal(false));
-      adminPanel.hidden = true;
+      const loginBtn = document.getElementById('login-button');
+      if (loginBtn) {
+        loginBtn.addEventListener('click', () => openModal('login'));
+      }
+      if (adminPanel) adminPanel.hidden = true;
     } else {
       controls.innerHTML = `
         <div class="user-info">
@@ -48,8 +124,16 @@ export function setupAuth(api) {
         </div>
         <button class="logout-button" id="logout-button">Uitloggen</button>
       `;
-      document.getElementById('logout-button').addEventListener('click', logout);
-      adminPanel.hidden = !currentUser.roles.includes('admin');
+      const logoutBtn = document.getElementById('logout-button');
+      if (logoutBtn) {
+        logoutBtn.addEventListener('click', async () => {
+          await logout();
+          await renderModels();
+        });
+      }
+      if (adminPanel) {
+        adminPanel.hidden = !currentUser.roles.includes('admin');
+      }
     }
   }
 
@@ -58,7 +142,8 @@ export function setupAuth(api) {
     api.setToken(token);
     currentUser = user;
     renderControls();
-    await renderModels();
+    // renderModels will be called by the caller after login
+    return user;
   }
 
   async function register(data) {
@@ -66,10 +151,20 @@ export function setupAuth(api) {
     api.setToken(token);
     currentUser = user;
     renderControls();
-    await renderModels();
+    // renderModels will be called by the caller after register
+    return user;
   }
 
   async function checkSession() {
+    // Check if there's a token in the URL (from Google OAuth redirect)
+    const urlParams = new URLSearchParams(window.location.search);
+    const tokenFromUrl = urlParams.get('token');
+    if (tokenFromUrl) {
+      api.setToken(tokenFromUrl);
+      // Clean up the URL
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+
     if (!api.token) {
       currentUser = null;
       renderControls();
@@ -89,12 +184,16 @@ export function setupAuth(api) {
     api.setToken(null);
     currentUser = null;
     renderControls();
-    await renderModels();
+    // renderModels will be called by the caller after logout
   }
 
-  loginButton.addEventListener('click', () => openModal(false));
-  overlay.addEventListener('click', closeModal);
-  close.addEventListener('click', closeModal);
+  loginButton?.addEventListener('click', () => openModal('login'));
+  overlay?.addEventListener('click', closeModal);
+  close?.addEventListener('click', closeModal);
+  loginTab?.addEventListener('click', () => setTab('login'));
+  registerTab?.addEventListener('click', () => setTab('register'));
+
+  // Google OAuth not configured - button removed from HTML
 
   loginForm.addEventListener('submit', async (event) => {
     event.preventDefault();
@@ -111,15 +210,10 @@ export function setupAuth(api) {
 
       await login(formData.get('email'), formData.get('password'));
       closeModal();
+      await renderModels();
     } catch (err) {
       loginFeedback.textContent = 'Inloggen mislukt. Controleer je gegevens.';
     }
-  });
-
-  toggleRegister.addEventListener('click', () => {
-    const showRegister = registerForm.hidden;
-    loginForm.hidden = showRegister;
-    registerForm.hidden = !showRegister;
   });
 
   registerForm.addEventListener('submit', async (event) => {
@@ -134,6 +228,7 @@ export function setupAuth(api) {
         password: formData.get('password'),
       });
       closeModal();
+      await renderModels();
     } catch (err) {
       registerFeedback.textContent = 'Registratie mislukt. Probeer opnieuw.';
     }

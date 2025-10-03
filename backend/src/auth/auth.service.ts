@@ -5,6 +5,7 @@ import { RegisterDto } from './dto/register.dto';
 import { verifyPassword } from '../utils/password';
 import { Roles } from '../constants/roles';
 import { JWT_AUDIENCE, JWT_EXPIRATION, JWT_ISSUER } from './constants';
+import { PublicUser } from '../user/dto/public-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -24,7 +25,7 @@ export class AuthService {
 		}
 
 		const publicUser = this.users.toPublic(user);
-		return this.signUser(publicUser.id, publicUser.roles, publicUser);
+		return this.issueTokenFor(publicUser);
 	}
 
 	async register(dto: RegisterDto) {
@@ -36,11 +37,15 @@ export class AuthService {
 			roles: [Roles.USER],
 		});
 
-		return this.signUser(user.id, user.roles, user);
+		return this.issueTokenFor(user);
 	}
 
 	async getProfile(id: number) {
 		return this.users.getById(id);
+	}
+
+	issueTokenFor(user: PublicUser) {
+		return this.signUser(user.id, user.roles, user);
 	}
 
 	private async signUser(userId: number, roles: string[], profile: any) {
