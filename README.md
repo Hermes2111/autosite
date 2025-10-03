@@ -1,205 +1,187 @@
-# Autosite - F1 Model Collection
+# 🏎️ F1 Modelauto Collectie
 
-A modern, full-stack application for managing and displaying a Formula 1 diecast model collection.
+Een moderne web applicatie voor het beheren en presenteren van een F1 diecast model collectie.
 
-## 🚀 Quick Start
+![F1 Collection](faviconauto.png)
 
-### Prerequisites
-- Node.js 20+
-- Docker & Docker Compose (for PostgreSQL)
-- Python 3.9+ (for serving the static frontend quickly)
+## ✨ Features
 
-### Running the Full Stack
+### 👥 **Voor Bezoekers:**
+- 🖼️ Moderne galerij met zoeken en filters
+- 🎨 Dark/Light mode
+- 🌐 Meertalig (NL, EN, FR)
+- 📱 Volledig responsive design
+- ⭐ Watchlist functionaliteit
+- 🔍 Geavanceerd zoeken op jaar, team, schaal
 
-1. **Clone & enter the project**
-   ```bash
-   git clone <repo-url>
-   cd autosite
-   ```
+### 👑 **Voor Admins:**
+- 📊 Uitgebreid dashboard met verkoop statistieken
+- ⚡ Quick Sale voor snelle verkoop registratie
+- 👥 Klanten management met aankoopgeschiedenis
+- 📈 Grafieken en analytics (Chart.js)
+- 📦 Items beheren (toevoegen, bewerken, verwijderen)
+- 💰 Verkoop tracking met winst/verlies analyse
+- 🔄 Repeat customer detectie
 
-2. **Start PostgreSQL** (via Docker Compose). If you already have your own Postgres instance, you can skip this step.
-   ```bash
-   docker-compose up -d db
-   ```
+## 🛠️ Tech Stack
 
-3. **Configure environment variables**
-   - Copy `backend/.env.example` to `backend/.env` or create it manually using the template further below.
-   - Adjust DB credentials or JWT secrets as needed.
+### **Frontend:**
+- HTML5, CSS3, JavaScript (ES Modules)
+- Vanilla JS (geen frameworks!)
+- Chart.js voor data visualisatie
+- Font Awesome icons
+- Google Fonts (Inter)
 
-4. **Install backend dependencies & apply migrations**
-   ```bash
-   cd backend
-   npm install
-   npm run db:migrate    # runs schema + seed migrations (includes watchlist tables)
-   npm run db:seed       # optional: loads extra CSV data
-   ```
+### **Backend:**
+- Node.js + NestJS framework
+- TypeORM voor database management
+- PostgreSQL database
+- JWT authentication
+- Google OAuth (optioneel)
+- Passport.js voor auth strategies
 
-5. **Start the NestJS API**
-   ```bash
-   npm run start:dev
-   ```
-   - Base URL: **http://localhost:3000/api**
-   - Static uploads: **http://localhost:3000/uploads**
-   - Seeded users (from migrations):
-     - `admin@example.com` / `Admin1234!` (roles: `admin`, `user`)
-     - `user@example.com` / `User1234!`
+### **Deployment:**
+- Render.com (gratis tier)
+- Auto-deploy vanuit GitHub
+- HTTPS/SSL automatisch
 
-6. **Serve the frontend**
-   From the project root (not inside `backend/`):
-   ```bash
-   python3 -m http.server 5500
-   # or
-   npx serve .
-   ```
-   Open **http://localhost:5500**. Use the “Backend URL” field in the login modal to point to your API (default `http://localhost:3000`). After logging in:
-   - Users can add/remove models from their watchlist via the card buttons.
-   - Admins see “Bestaande modellen beheren” with edit/delete support.
+## 🚀 Quick Start (Lokaal)
 
-7. **Optional:** run the FastAPI fallback (Python) if you need the older API version.
-   ```bash
-   python3 -m venv .venv
-   source .venv/bin/activate
-   pip install -r requirements.txt
-   uvicorn api.main:app --reload
-   ```
+### **1. Clone Repository**
+```bash
+git clone https://github.com/Hermes2111/autosite.git
+cd autosite
+```
 
-## 🔐 Authentication & Roles
+### **2. Start Database (Docker)**
+```bash
+docker-compose up -d
+```
 
-- `POST /api/auth/login` – obtain JWT
-- `POST /api/auth/register` – create user (default role `user`)
-- `GET /api/auth/me` – current user profile
-- Admin-only endpoints require `Authorization: Bearer <token>` header
-- Admin module (`/api/admin/models`) accepts multipart form-data (`images[]`)
-- Watchlist endpoints under `/api/watchlist` require authentication
+### **3. Backend Setup**
+```bash
+cd backend
+npm install
+npm run start:dev
+```
 
-### Watchlist API
-- `GET /api/watchlist` – list current user’s watchlist entries
-- `POST /api/watchlist/:modelId` – add model to watchlist
-- `DELETE /api/watchlist/:modelId` – remove model from watchlist
-- `DELETE /api/watchlist` – clear watchlist
+### **4. Frontend Setup**
+```bash
+# In project root
+python3 -m http.server 5500
+```
 
-Front-end stores JWT in `localStorage` and exposes admin panel when user has `admin` role.
+### **5. Open Browser**
+```
+http://localhost:5500
+```
 
-## 📡 API Endpoints
+**Login:**
+- Email: `admin@example.com`
+- Password: `Admin1234!`
 
-The backend is served under `/api`. Key routes:
-- `GET /api/health`
-- `GET /api/diecast-models` (returns `{ items: [...] }`)
-- `POST /api/diecast-models` (admin)
-- `PATCH /api/diecast-models/:id` (admin)
-- `DELETE /api/diecast-models/:id` (admin)
-- `POST /api/admin/models` (admin upload with photos)
-- `PATCH /api/admin/models/:id` (admin update with optional new photos)
-- `DELETE /api/admin/models/:id`
-- `GET /api/watchlist`, `POST /api/watchlist/:modelId`, `DELETE /api/watchlist/:modelId`
-- `GET /api/teams`, `GET /api/drivers`, etc.
+## 📦 Deployment naar Render.com
 
-## 🎨 Frontend Features
+Zie volledige instructies in:
+- **Quick Start:** [RENDER_QUICK_START.md](RENDER_QUICK_START.md)
+- **Uitgebreide Guide:** [DEPLOYMENT.md](DEPLOYMENT.md)
 
-- **Modern futuristic design** with sleek black UI
-- **Color scheme:** Yellow (#FFDD00), Green (#009739), Blue (#003D8E)
-- **Responsive admin panel** with edit/delete tooling and live feedback
-- **User watchlist integration** with quick toggle buttons on every card
-- **Real-time search and filtering**
-- **Image gallery modal** with keyboard navigation
-- **Statistics dashboard**
-- **Responsive design** for all devices
-- **Smooth animations** and hover effects
+### **TL;DR:**
+1. Push code naar GitHub ✅ (al klaar!)
+2. Login op Render.com
+3. New Blueprint → Select "autosite" repo
+4. Klik "Apply"
+5. Wacht 5-10 minuten
+6. Live! 🎉
 
-## 🗄️ Database
-
-PostgreSQL running in Docker with:
-- **Tables:** users, teams, drivers, diecast_models, watchlist_items, model_driver
-- **Relationships:** Team → DiecastModel (1:N), DiecastModel ↔ Driver (M:N), User → WatchlistItem (1:N)
-- **Migrations:** TypeORM migrations in `backend/src/migrations/`
-- **Seeding:** Populated from `collection.csv` (diecast models + drivers)
-
-## 📁 Project Structure
+## 📁 Project Structuur
 
 ```
 autosite/
-├── backend/              # NestJS + TypeORM + PostgreSQL
+├── backend/              # NestJS backend
 │   ├── src/
-│   │   ├── entities/     # TypeORM entities
-│   │   ├── diecast-model/# CRUD module
-│   │   ├── team/         # CRUD module
-│   │   ├── user/         # CRUD module
-│   │   ├── driver/       # CRUD module
-│   │   ├── health/       # Health check
-│   │   ├── migrations/   # Database migrations
-│   │   └── seeds/        # Seed scripts
-│   ├── Dockerfile
+│   │   ├── auth/        # Authentication
+│   │   ├── customer/    # Customer management
+│   │   ├── diecast-model/
+│   │   ├── entities/    # TypeORM entities
+│   │   └── ...
 │   └── package.json
-├── api/                  # FastAPI alternative (Python)
-│   └── main.py
-├── index.html            # Frontend
-├── style.css             # Futuristic styling
-├── script.js             # Frontend logic
-├── collection.csv        # Source data
-└── docker-compose.yml    # Docker services
-
+├── web/                  # Frontend modules
+│   ├── admin.js         # Admin panel
+│   ├── auth.js          # Authentication
+│   ├── customers.js     # Customer management
+│   ├── dashboard.js     # Sales dashboard
+│   ├── gallery.js       # Main gallery
+│   └── ...
+├── index.html           # Main HTML
+├── style.css            # Styling
+├── script.js            # Main entry point
+├── render.yaml          # Render deployment config
+└── docker-compose.yml   # Local development
 ```
 
-## 🧪 Testing the API
+## 🎨 Screenshots
 
-```bash
-# Health check
-curl http://localhost:3000/health
+### Galerij View
+Modern grid layout met filters en zoekfunctionaliteit
 
-# Get all models
-curl http://localhost:3000/diecast-models
+### Admin Dashboard
+Uitgebreide verkoop statistieken en grafieken
 
-# Get all teams
-curl http://localhost:3000/teams
+### Customer Management
+Klanten beheer met aankoopgeschiedenis
 
-# Create a new user
-curl -X POST http://localhost:3000/users \
-  -H "Content-Type: application/json" \
-  -d '{"email":"test@example.com","name":"Test User"}'
+## 🔐 Environment Variables
 
-# Get specific model
-curl http://localhost:3000/diecast-models/1
-```
+Voor lokale development, maak `.env` aan:
 
-## 🌐 Environment Variables
-
-Create `backend/.env`:
 ```env
-PORT=3000
-DB_HOST=localhost
-DB_PORT=5432
-DB_USER=devusr
-DB_PASSWORD=devpwd
-DB_NAME=autosite
-AUTH_JWT_SECRET=super-secret-change-me
-AUTH_JWT_AUDIENCE=autosite.local
-AUTH_JWT_ISSUER=autosite.local
-AUTH_JWT_EXPIRATION=3600
-AUTH_ARGON_HASH_LENGTH=32
-AUTH_ARGON_TIME_COST=3
-AUTH_ARGON_MEMORY_COST=65536
-PUBLIC_UPLOAD_BASE_URL=http://localhost:3000/uploads
+DATABASE_URL=postgresql://devusr:devpwd@localhost:5432/autosite
+JWT_SECRET=your-secret-key
+NODE_ENV=development
 ```
 
-Uploads and watchlist metadata are stored in PostgreSQL, while images save to `uploads/models`. Ensure the directory exists and is writable (created automatically on boot).
+Voor production (Render.com):
+- `DATABASE_URL` - Auto-generated
+- `JWT_SECRET` - Auto-generated
+- `NODE_ENV=production`
 
-## 📧 Contact
+## 📊 Database Schema
 
-- **Email:** hermesvansteenbrugge1@gmail.com
-- **Phone:** +32 484 32 16 20
-- **Location:** Avelgem, Belgium
+### **Main Tables:**
+- `users` - User accounts en admin roles
+- `diecast_models` - F1 model collectie items
+- `customers` - Klanten database
+- `teams` - F1 teams
+- `drivers` - F1 coureurs
+- `watchlist` - User favorites
 
-## ⚡ Tech Stack
+## 🤝 Contributing
 
-- **Frontend:** HTML5, CSS3 (Glass Morphism), Vanilla JavaScript
-- **Backend:** NestJS, TypeORM, Node.js
-- **Database:** PostgreSQL 16
-- **Authentication:** JWT, Passport.js, Argon2
-- **Alternative API:** FastAPI (Python)
-- **Deployment:** Docker, Docker Compose (API, DB), static hosting for frontend
-- **Fonts:** Inter (Google Fonts)
-- **Icons:** Font Awesome 6
+Dit is een persoonlijk project, maar suggesties zijn welkom!
+
+1. Fork het project
+2. Maak een feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit changes (`git commit -m 'Add AmazingFeature'`)
+4. Push naar branch (`git push origin feature/AmazingFeature`)
+5. Open een Pull Request
+
+## 📝 License
+
+Dit project is voor persoonlijk gebruik.
+
+## 👨‍💻 Author
+
+**Hermes van Steenbrugge**
+- GitHub: [@Hermes2111](https://github.com/Hermes2111)
+
+## 🙏 Acknowledgments
+
+- Font Awesome voor icons
+- Chart.js voor grafieken
+- NestJS framework
+- Render.com voor gratis hosting
 
 ---
 
-Built with ❤️ for Formula 1 collectors
+**Made with ❤️ for F1 collectie liefhebbers**
