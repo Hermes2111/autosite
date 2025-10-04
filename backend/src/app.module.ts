@@ -24,6 +24,8 @@ import { CustomerModule } from './customer/customer.module';
 						url: process.env.DATABASE_URL,
 						autoLoadEntities: true,
 						synchronize: false,
+						migrationsRun: true, // Run migrations automatically
+						migrations: ['dist/migrations/*.js'],
 						ssl: {
 							rejectUnauthorized: false,
 						},
@@ -40,6 +42,8 @@ import { CustomerModule } from './customer/customer.module';
 					database: process.env.DB_NAME || 'autosite',
 					autoLoadEntities: true,
 					synchronize: false,
+					migrationsRun: true, // Run migrations automatically
+					migrations: ['dist/migrations/*.js'],
 				};
 			},
 		}),
