@@ -14,8 +14,6 @@ export function setupAuth(api) {
   const loginFeedback = document.getElementById('login-feedback');
   const registerForm = document.getElementById('register-form');
   const registerFeedback = document.getElementById('register-feedback');
-  const backendInput = document.getElementById('backend-url');
-  const rememberBackend = document.getElementById('remember-backend');
   const googleButton = document.getElementById('google-login');
   const adminPanel = document.getElementById('admin-panel');
 
@@ -25,12 +23,6 @@ export function setupAuth(api) {
   if (modal) {
     modal.classList.remove('visible');
     modal.hidden = true;
-  }
-
-  const savedBase = localStorage.getItem('autosite.apiBase');
-  if (backendInput && savedBase) {
-    backendInput.value = savedBase.replace(/\/api$/, '');
-    if (rememberBackend) rememberBackend.checked = true;
   }
 
   function setTab(tab) {
@@ -211,13 +203,6 @@ export function setupAuth(api) {
     loginFeedback.textContent = '';
 
     try {
-      if (backendInput && backendInput.value) {
-        const base = `${backendInput.value.replace(/\/$/, '')}/api`;
-        if (rememberBackend?.checked) {
-          api.setBaseUrl(base);
-        }
-      }
-
       await login(formData.get('email'), formData.get('password'));
       closeModal();
       await renderModels();

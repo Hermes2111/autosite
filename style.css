@@ -1776,52 +1776,6 @@ body {
     box-shadow: 0 0 0 2px rgba(0,61,142,0.25);
 }
 
-.backend-config {
-    margin-top: 16px;
-    padding: 16px;
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 8px;
-}
-
-.backend-config summary {
-    cursor: pointer;
-    color: var(--text-secondary);
-    font-size: 0.875rem;
-    margin-bottom: 12px;
-}
-
-.backend-config label {
-    display: block;
-    margin-top: 12px;
-}
-
-.backend-config label span {
-    display: block;
-    margin-bottom: 6px;
-    color: var(--text-secondary);
-    font-size: 0.85rem;
-}
-
-.backend-config input[type="text"] {
-    width: 100%;
-    padding: 10px;
-    border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    background: rgba(255,255,255,0.02);
-    color: var(--text-primary);
-}
-
-.backend-config .remember-backend {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-top: 8px;
-}
-
-.backend-config .remember-backend input[type="checkbox"] {
-    width: auto;
-}
 
 .auth-feedback {
     min-height: 20px;
@@ -1834,10 +1788,6 @@ body {
         padding: 24px;
         gap: 16px;
         width: min(94vw, 420px);
-    }
-
-    .backend-config {
-        grid-template-columns: 1fr;
     }
 
     .auth-tabs {

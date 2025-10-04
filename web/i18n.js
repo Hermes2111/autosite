@@ -61,8 +61,6 @@ const translations = {
     'auth.or': 'of',
     'auth.loginFailed': 'Inloggen mislukt. Controleer je gegevens.',
     'auth.registerFailed': 'Registratie mislukt. Probeer opnieuw.',
-    'auth.advanced': 'Geavanceerde instellingen',
-    'auth.backendUrl': 'Backend URL',
     'auth.rememberUrl': 'Onthoud URL',
     
     // Admin
@@ -152,8 +150,6 @@ const translations = {
     'auth.or': 'or',
     'auth.loginFailed': 'Login failed. Check your credentials.',
     'auth.registerFailed': 'Registration failed. Try again.',
-    'auth.advanced': 'Advanced settings',
-    'auth.backendUrl': 'Backend URL',
     'auth.rememberUrl': 'Remember URL',
     
     // Admin
@@ -243,8 +239,6 @@ const translations = {
     'auth.or': 'ou',
     'auth.loginFailed': 'Échec de la connexion. Vérifiez vos identifiants.',
     'auth.registerFailed': 'Échec de l\'inscription. Réessayez.',
-    'auth.advanced': 'Paramètres avancés',
-    'auth.backendUrl': 'URL du backend',
     'auth.rememberUrl': 'Mémoriser l\'URL',
     
     // Admin
@@ -320,4 +314,6 @@ class I18n {
 }
 
 export const i18n = new I18n();
+
+
 
