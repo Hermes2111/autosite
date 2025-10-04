@@ -1,7 +1,7 @@
 services:
   # Backend API Service
   - type: web
-    name: f1-collection-api
+    name: autosite-api
     runtime: node
     region: frankfurt
     plan: free
@@ -14,7 +14,7 @@ services:
         value: 3000
       - key: DATABASE_URL
         fromDatabase:
-          name: f1-collection-db
+          name: autosite-db
           property: connectionString
       - key: JWT_SECRET
         generateValue: true
@@ -30,7 +30,7 @@ services:
 
   # Frontend Static Site
   - type: web
-    name: f1-collection
+    name: autosite
     runtime: static
     buildCommand: echo "No build needed - static site"
     staticPublishPath: .
@@ -44,13 +44,13 @@ services:
     routes:
       - type: rewrite
         source: /api/*
-        destination: https://f1-collection-api.onrender.com/api/*
+        destination: https://autosite-api.onrender.com/api/*
     envVars:
       - key: API_URL
-        value: https://f1-collection-api.onrender.com
+        value: https://autosite-api.onrender.com
 
 databases:
-  - name: f1-collection-db
+  - name: autosite-db
     databaseName: autosite
     user: autosite
     plan: free
