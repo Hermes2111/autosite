@@ -6,13 +6,26 @@ import { Driver } from './entities/driver.entity';
 import { DiecastModel } from './entities/diecast-model.entity';
 import { WatchlistItem } from './watchlist/entities/watchlist-item.entity';
 
+// Support both DATABASE_URL (Render) and individual vars (local)
+const dataSourceConfig = process.env.DATABASE_URL
+	? {
+			type: 'postgres' as const,
+			url: process.env.DATABASE_URL,
+			ssl: {
+				rejectUnauthorized: false,
+			},
+	  }
+	: {
+			type: 'postgres' as const,
+			host: process.env.DB_HOST || 'localhost',
+			port: Number(process.env.DB_PORT || 5432),
+			username: process.env.DB_USER || 'devusr',
+			password: process.env.DB_PASSWORD || 'devpwd',
+			database: process.env.DB_NAME || 'autosite',
+	  };
+
 export const AppDataSource = new DataSource({
-	type: 'postgres',
-	host: process.env.DB_HOST || 'localhost',
-	port: Number(process.env.DB_PORT || 5432),
-	username: process.env.DB_USER || 'devusr',
-	password: process.env.DB_PASSWORD || 'devpwd',
-	database: process.env.DB_NAME || 'autosite',
+	...dataSourceConfig,
 	entities: [User, Team, Driver, DiecastModel, WatchlistItem],
 	migrations: ['src/migrations/*.ts'],
 	synchronize: false,

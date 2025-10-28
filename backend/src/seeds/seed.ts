@@ -54,7 +54,13 @@ async function main() {
 			numbers: rec['numbers'] || '',
 			price: rec['price'] || '',
 			teamId: team?.id ?? null,
+			imageUrls: [] as string[],
 		};
+
+		// Parse images if present
+		if (rec['images']) {
+			payload.imageUrls = rec['images'].split(',').map((img: string) => img.trim()).filter(Boolean);
+		}
 
 		const existing = await dmRepo.findOne({
 			where: {
@@ -73,9 +79,10 @@ async function main() {
 		await dmRepo.save(model);
 	}
 
-	await AppDataSource.destroy();
+	const finalCount = await dmRepo.count();
+	console.log(`✅ Seed completed - ${finalCount} models in database`);
 	
-	console.log('Seed completed');
+	await AppDataSource.destroy();
 }
 
 main().catch((err) => {
