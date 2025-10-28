@@ -15,6 +15,8 @@ export class DiecastModelController {
 	async findAll() {
 		try {
 			const items = await this.service.findAll();
+			// Log count for debugging
+			console.log(`API: Returning ${items?.length || 0} models to client`);
 			return { items: items || [] };
 		} catch (error) {
 			console.error('Error fetching diecast models:', error);

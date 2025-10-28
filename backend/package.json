@@ -19,7 +19,8 @@
     "test:debug": "node --inspect-brk -r ts-node/register node_modules/.bin/jest --runInBand",
     "db:migrate": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:run -d ./src/data-source.ts",
     "db:revert": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:revert -d ./src/data-source.ts",
-    "db:seed": "ts-node -r tsconfig-paths/register ./src/seeds/seed.ts"
+    "db:seed": "ts-node -r tsconfig-paths/register ./src/seeds/seed.ts",
+    "db:check": "ts-node -r tsconfig-paths/register ./src/scripts/check-db.ts"
   },
   "dependencies": {
     "@nestjs/cli": "^10.4.5",
