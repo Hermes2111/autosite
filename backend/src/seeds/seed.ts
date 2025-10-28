@@ -4,6 +4,9 @@ import * as path from 'node:path';
 import { AppDataSource } from '../data-source';
 import { DiecastModel } from '../entities/diecast-model.entity';
 import { Team } from '../entities/team.entity';
+import { User } from '../entities/user.entity';
+import { hashPassword } from '../utils/password';
+import { Roles } from '../constants/roles';
 
 function normalize(name: string): string {
 	return name.trim().toLowerCase().replace(/\s+/g, '_').replace(/-/g, '_');
@@ -20,6 +23,27 @@ async function main() {
 	await AppDataSource.initialize();
 	const dmRepo = AppDataSource.getRepository(DiecastModel);
 	const teamRepo = AppDataSource.getRepository(Team);
+	const userRepo = AppDataSource.getRepository(User);
+
+	// Create admin user if it doesn't exist
+	const adminEmail = process.env.ADMIN_EMAIL || 'admin@autosite.com';
+	const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
+	
+	const existingAdmin = await userRepo.findOne({ where: { email: adminEmail } });
+	if (!existingAdmin) {
+		console.log('Creating admin user...');
+		const admin = userRepo.create({
+			email: adminEmail,
+			name: 'Admin',
+			passwordHash: await hashPassword(adminPassword),
+			roles: [Roles.ADMIN],
+			isActive: true,
+		});
+		await userRepo.save(admin);
+		console.log(`✅ Admin user created: ${adminEmail} / ${adminPassword}`);
+	} else {
+		console.log('Admin user already exists');
+	}
 
 	const file = csvPath();
 	const raw = fs.readFileSync(file, 'utf-8');
