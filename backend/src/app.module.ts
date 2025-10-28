@@ -25,8 +25,7 @@ import { join } from 'path';
 						url: process.env.DATABASE_URL,
 						autoLoadEntities: true,
 						synchronize: false,
-						migrationsRun: false, // Run migrations manually in main.ts
-						migrations: [join(__dirname, 'migrations', '*.js')],
+						// No migrations - schema fixes handled in seed script
 						ssl: {
 							rejectUnauthorized: false,
 						},
@@ -43,8 +42,7 @@ import { join } from 'path';
 					database: process.env.DB_NAME || 'autosite',
 					autoLoadEntities: true,
 					synchronize: false,
-					migrationsRun: false, // Run migrations manually in main.ts
-					migrations: [join(__dirname, 'migrations', '*.{ts,js}')],
+					// No migrations - schema fixes handled in seed script
 				};
 			},
 		}),

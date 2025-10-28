@@ -28,8 +28,8 @@ const dataSourceConfig = process.env.DATABASE_URL
 export const AppDataSource = new DataSource({
 	...dataSourceConfig,
 	entities: [User, Team, Driver, DiecastModel, WatchlistItem, Customer],
-	// Support both .ts (dev) and .js (production)
-	migrations: [__dirname + '/migrations/*.{ts,js}'],
+	// No migrations - we handle schema fixes directly in seed script
+	migrations: [],
 	synchronize: false,
 	logging: false,
 });
