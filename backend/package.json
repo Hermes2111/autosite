@@ -7,7 +7,7 @@
     "node": ">=20"
   },
   "scripts": {
-    "build": "npx nest build && cp -r src/migrations dist/",
+    "build": "npx nest build && cp -r src/migrations dist/ && (cp ../collection.csv dist/ || cp collection.csv dist/ || true)",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "npx nest start",
     "start:dev": "npx nest start --watch",

@@ -84,11 +84,13 @@ export async function renderModels() {
     updateStatistics(filteredModels);
     drawCards(filteredModels);
   } catch (error) {
+    const apiBase = apiClient.baseUrl;
     collectionContainer.innerHTML = `
       <div style="grid-column: 1 / -1; text-align: center; padding: 64px 24px;">
         <i class="fas fa-exclamation-triangle" style="font-size: 4rem; color: var(--danger, #e74c3c); margin-bottom: 24px;"></i>
         <h3 style="font-size: 1.75rem; margin-bottom: 12px;">Er is iets misgegaan</h3>
-        <p style="color: var(--text-secondary);">Kan geen verbinding maken met de API. Controleer of de backend draait op <code>http://localhost:3000</code></p>
+        <p style="color: var(--text-secondary);">Kan geen verbinding maken met de API.</p>
+        <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 8px;">API URL: <code>${apiBase}</code></p>
         <p style="color: var(--text-secondary); margin-top: 12px;">Error: ${error.message}</p>
         <button onclick="location.reload()" style="margin-top: 24px; padding: 12px 24px; background: var(--primary, #3498db); color: white; border: none; border-radius: 8px; cursor: pointer;">
           Probeer opnieuw

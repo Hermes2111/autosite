@@ -2,6 +2,12 @@ const detectApiBase = () => {
   const saved = localStorage.getItem('autosite.apiBase');
   if (saved) return saved;
 
+  // Check for environment variable (set in production)
+  const envApiUrl = window.API_URL || import.meta.env?.VITE_API_URL;
+  if (envApiUrl) {
+    return envApiUrl.endsWith('/api') ? envApiUrl : `${envApiUrl}/api`;
+  }
+
   // Default to localhost:3000 for local development
   if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
     return 'http://localhost:3000/api';
@@ -12,12 +18,9 @@ const detectApiBase = () => {
     return 'https://autosite-api.onrender.com/api';
   }
 
-  // Fallback for other deployments
-  const { protocol, hostname } = window.location;
-  const defaultPort = protocol === 'https:' ? 443 : 80;
-  const backendPort = protocol === 'https:' ? defaultPort : 3000;
-  const portSegment = backendPort === defaultPort ? '' : `:${backendPort}`;
-  return `${protocol}//${hostname}${portSegment}/api`;
+  // Fallback: use /api relative path (works with Render route rewrites)
+  // This will use the route rewrite in render.yaml
+  return '/api';
 };
 
 let API_BASE = detectApiBase();

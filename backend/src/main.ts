@@ -4,6 +4,7 @@ import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import * as cookieParser from 'cookie-parser';
+import { ensureDirSync } from './utils/fs';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
@@ -19,7 +20,12 @@ async function bootstrap() {
   const cookieSecret = config.get('COOKIE_SECRET') ?? 'autosite-cookie-secret';
   app.use(cookieParser(cookieSecret));
   app.setGlobalPrefix('api');
+  
+  // Ensure uploads directory exists
   const uploadsDir = join(process.cwd(), 'uploads');
+  ensureDirSync(uploadsDir);
+  ensureDirSync(join(uploadsDir, 'models'));
+  
   app.useStaticAssets(uploadsDir, {
     prefix: '/uploads',
   });

@@ -26,6 +26,10 @@ services:
         sync: false
       - key: GOOGLE_CALLBACK_URL
         sync: false
+      - key: PUBLIC_UPLOAD_BASE_URL
+        value: https://autosite-api.onrender.com/uploads
+      - key: FRONTEND_URL
+        value: https://autosite.onrender.com
     healthCheckPath: /api/health
 
   # Frontend Static Site

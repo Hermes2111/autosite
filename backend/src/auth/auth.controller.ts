@@ -5,7 +5,7 @@ import { RegisterDto } from './dto/register.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { CurrentUser } from './decorators/current-user.decorator';
 import { SessionUser } from './interfaces/session-user.interface';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { GoogleAuthGuard } from './guards/google-auth.guard';
 
 @Controller('auth')
@@ -38,7 +38,8 @@ export class AuthController {
 	@UseGuards(GoogleAuthGuard)
 	googleCallback(@Req() req: any, @Res() res: Response) {
 		const tokenData = req.user;
-		const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5500';
+		// Default to Render static site URL, or use environment variable
+		const frontendUrl = process.env.FRONTEND_URL || 'https://autosite.onrender.com';
 		const redirectUrl = `${frontendUrl}?token=${tokenData.token}`;
 		res.redirect(redirectUrl);
 	}

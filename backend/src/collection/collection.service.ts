@@ -1,12 +1,21 @@
 import { Injectable } from '@nestjs/common';
-import { readFileSync } from 'fs';
+import { readFileSync, accessSync } from 'fs';
 import { resolve, join } from 'path';
 
 function csvPath() {
 	const env = process.env.AUTOSITE_COLLECTION_CSV;
 	if (env) return resolve(env);
-	// backend/dist/collection -> up 3 levels to project root
-	return join(__dirname, '..', '..', '..', 'collection.csv');
+	// In build: backend/dist/collection/collection.service.js
+	// Try dist/collection.csv first (from build), then go up to project root
+	const distPath = join(__dirname, '..', 'collection.csv');
+	const rootPath = join(__dirname, '..', '..', '..', 'collection.csv');
+	// Check if dist path exists (production build), otherwise use root path
+	try {
+		accessSync(distPath);
+		return distPath;
+	} catch {
+		return rootPath;
+	}
 }
 
 function normalize(name: string): string {

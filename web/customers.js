@@ -1,3 +1,5 @@
+import { apiClient } from './apiClient.js';
+
 export function setupCustomerManagement(auth) {
   const customersTable = document.getElementById('customers-table-body');
   const customerModal = document.getElementById('customer-modal');
@@ -10,14 +12,7 @@ export function setupCustomerManagement(auth) {
 
   async function loadCustomers() {
     try {
-      const token = auth.getToken();
-      const response = await fetch('http://localhost:3000/api/customers', {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      
-      if (!response.ok) throw new Error('Failed to load customers');
-      
-      allCustomers = await response.json();
+      allCustomers = await apiClient.get('/customers');
       renderCustomersTable();
     } catch (error) {
       console.error('Error loading customers:', error);
@@ -86,21 +81,11 @@ export function setupCustomerManagement(auth) {
     };
 
     try {
-      const token = auth.getToken();
-      const url = editingCustomerId 
-        ? `http://localhost:3000/api/customers/${editingCustomerId}`
-        : 'http://localhost:3000/api/customers';
-      
-      const response = await fetch(url, {
-        method: editingCustomerId ? 'PATCH' : 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(customerData)
-      });
-
-      if (!response.ok) throw new Error('Failed to save customer');
+      if (editingCustomerId) {
+        await apiClient.patch(`/customers/${editingCustomerId}`, customerData);
+      } else {
+        await apiClient.post('/customers', customerData);
+      }
 
       closeCustomerModal();
       await loadCustomers();
@@ -208,14 +193,7 @@ export function setupCustomerManagement(auth) {
     if (!confirm('Weet je zeker dat je deze klant wilt verwijderen?')) return;
     
     try {
-      const token = auth.getToken();
-      const response = await fetch(`http://localhost:3000/api/customers/${id}`, {
-        method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-
-      if (!response.ok) throw new Error('Failed to delete customer');
-
+      await apiClient.delete(`/customers/${id}`);
       await loadCustomers();
     } catch (error) {
       console.error('Error deleting customer:', error);
