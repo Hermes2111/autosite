@@ -4,14 +4,28 @@ export class FixMissingColumns1759345289092 implements MigrationInterface {
 	name = 'FixMissingColumns1759345289092'
 
 	public async up(queryRunner: QueryRunner): Promise<void> {
-		// Add missing columns to users table
+		// Fix users table - handle both password and password_hash columns
 		await queryRunner.query(`
 			DO $$ 
 			BEGIN
+				-- If password column exists but password_hash doesn't, rename it
+				IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='users' AND column_name='password') 
+				   AND NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='users' AND column_name='password_hash') THEN
+					ALTER TABLE "users" RENAME COLUMN "password" TO "password_hash";
+				END IF;
+				
+				-- If password_hash still doesn't exist, add it
 				IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='users' AND column_name='password_hash') THEN
 					ALTER TABLE "users" ADD COLUMN "password_hash" VARCHAR;
 				END IF;
 				
+				-- If password column still exists (and password_hash too), drop the old one
+				IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='users' AND column_name='password') 
+				   AND EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='users' AND column_name='password_hash') THEN
+					ALTER TABLE "users" DROP COLUMN "password";
+				END IF;
+				
+				-- Add roles column if missing
 				IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='users' AND column_name='roles') THEN
 					ALTER TABLE "users" ADD COLUMN "roles" VARCHAR[] DEFAULT '{user}';
 				END IF;
