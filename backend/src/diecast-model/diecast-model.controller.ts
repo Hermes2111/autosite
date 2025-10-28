@@ -15,10 +15,12 @@ export class DiecastModelController {
 	async findAll() {
 		try {
 			const items = await this.service.findAll();
-			return { items };
+			return { items: items || [] };
 		} catch (error) {
 			console.error('Error fetching diecast models:', error);
-			throw error;
+			console.error('Error stack:', error instanceof Error ? error.stack : 'No stack trace');
+			// Return empty array instead of 500 error
+			return { items: [] };
 		}
 	}
 

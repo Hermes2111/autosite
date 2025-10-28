@@ -15,10 +15,13 @@ export class DiecastModelService {
 		try {
 			const items = await this.repo.find();
 			console.log(`Found ${items.length} diecast models in database`);
-			return items;
+			// Return empty array if database is empty (this is OK, not an error)
+			return items || [];
 		} catch (error) {
 			console.error('Database error in findAll:', error);
-			throw error;
+			console.error('Error details:', JSON.stringify(error, null, 2));
+			// Return empty array on error instead of crashing
+			return [];
 		}
 	}
 
