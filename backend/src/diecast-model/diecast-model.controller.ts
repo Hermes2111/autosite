@@ -13,8 +13,13 @@ export class DiecastModelController {
 
 	@Get()
 	async findAll() {
-		const items = await this.service.findAll();
-		return { items };
+		try {
+			const items = await this.service.findAll();
+			return { items };
+		} catch (error) {
+			console.error('Error fetching diecast models:', error);
+			throw error;
+		}
 	}
 
 	@Get(':id')

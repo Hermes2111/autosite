@@ -12,7 +12,14 @@ export class DiecastModelService {
 	) {}
 
 	async findAll(): Promise<DiecastModel[]> {
-		return this.repo.find();
+		try {
+			const items = await this.repo.find();
+			console.log(`Found ${items.length} diecast models in database`);
+			return items;
+		} catch (error) {
+			console.error('Database error in findAll:', error);
+			throw error;
+		}
 	}
 
 	async findOne(id: number): Promise<DiecastModel> {

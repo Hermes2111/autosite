@@ -25,46 +25,57 @@ function normalize(name: string): string {
 @Injectable()
 export class CollectionService {
 	loadAll() {
-		const file = csvPath();
-		const raw = readFileSync(file, 'utf-8');
-		const lines = raw.split(/\r?\n/).filter(l => l.length > 0);
-		if (lines.length === 0) return [] as any[];
-
-		const headers = lines[0].split(',');
-		const data = lines.slice(1).filter(l => !l.startsWith(headers[0] + ','));
-		const normHeaders = headers.map(normalize);
-
-		const records = data.map(line => {
-			const cols = line.split(',');
-			const rec: Record<string, any> = {};
-			for (let i = 0; i < normHeaders.length; i++) {
-				rec[normHeaders[i]] = i < cols.length ? cols[i] : '';
-			}
-			return rec;
-		});
-
-		for (const rec of records) {
-			if ('shipping__fees_not_included!' in rec && !('shipping_fees_note' in rec)) {
-				rec['shipping_fees_note'] = rec['shipping__fees_not_included!'];
-				delete rec['shipping__fees_not_included!'];
-			}
-			if ('afbeeldingen' in rec && !('images' in rec)) {
-				rec['images'] = rec['afbeeldingen'];
-				delete rec['afbeeldingen'];
+		try {
+			const file = csvPath();
+			console.log(`Loading collection from: ${file}`);
+			const raw = readFileSync(file, 'utf-8');
+			const lines = raw.split(/\r?\n/).filter(l => l.length > 0);
+			if (lines.length === 0) {
+				console.warn('CSV file is empty');
+				return [] as any[];
 			}
 
-			for (const k of ['year','what','scale','specs','numbers','price']) {
-				if (!(k in rec)) rec[k] = '';
+			const headers = lines[0].split(',');
+			const data = lines.slice(1).filter(l => !l.startsWith(headers[0] + ','));
+			const normHeaders = headers.map(normalize);
+
+			const records = data.map(line => {
+				const cols = line.split(',');
+				const rec: Record<string, any> = {};
+				for (let i = 0; i < normHeaders.length; i++) {
+					rec[normHeaders[i]] = i < cols.length ? cols[i] : '';
+				}
+				return rec;
+			});
+
+			for (const rec of records) {
+				if ('shipping__fees_not_included!' in rec && !('shipping_fees_note' in rec)) {
+					rec['shipping_fees_note'] = rec['shipping__fees_not_included!'];
+					delete rec['shipping__fees_not_included!'];
+				}
+				if ('afbeeldingen' in rec && !('images' in rec)) {
+					rec['images'] = rec['afbeeldingen'];
+					delete rec['afbeeldingen'];
+				}
+
+				for (const k of ['year','what','scale','specs','numbers','price']) {
+					if (!(k in rec)) rec[k] = '';
+				}
+
+				if ('images' in rec && typeof rec['images'] === 'string') {
+					const val = (rec['images'] as string).trim();
+					rec['images'] = val ? val.split(',').map(s => s.trim()).filter(Boolean) : [];
+				}
 			}
 
-			if ('images' in rec && typeof rec['images'] === 'string') {
-				const val = (rec['images'] as string).trim();
-				rec['images'] = val ? val.split(',').map(s => s.trim()).filter(Boolean) : [];
-			}
+			records.forEach((r, i) => r.id = i);
+			console.log(`Loaded ${records.length} records from CSV`);
+			return records;
+		} catch (error) {
+			console.error('Error loading collection CSV:', error);
+			console.error('CSV path attempted:', csvPath());
+			throw error;
 		}
-
-		records.forEach((r, i) => r.id = i);
-		return records;
 	}
 }
 
