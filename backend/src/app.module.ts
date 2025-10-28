@@ -10,6 +10,7 @@ import { AuthModule } from './auth/auth.module';
 import { AdminModule } from './admin/admin.module';
 import { WatchlistModule } from './watchlist/watchlist.module';
 import { CustomerModule } from './customer/customer.module';
+import { join } from 'path';
 
 @Module({
 	imports: [
@@ -24,8 +25,8 @@ import { CustomerModule } from './customer/customer.module';
 						url: process.env.DATABASE_URL,
 						autoLoadEntities: true,
 						synchronize: false,
-						migrationsRun: true, // Run migrations automatically
-						migrations: ['dist/migrations/*.js'],
+						migrationsRun: false, // Run migrations manually in main.ts
+						migrations: [join(__dirname, 'migrations', '*.js')],
 						ssl: {
 							rejectUnauthorized: false,
 						},
@@ -42,8 +43,8 @@ import { CustomerModule } from './customer/customer.module';
 					database: process.env.DB_NAME || 'autosite',
 					autoLoadEntities: true,
 					synchronize: false,
-					migrationsRun: true, // Run migrations automatically
-					migrations: ['dist/migrations/*.js'],
+					migrationsRun: false, // Run migrations manually in main.ts
+					migrations: [join(__dirname, 'migrations', '*.{ts,js}')],
 				};
 			},
 		}),

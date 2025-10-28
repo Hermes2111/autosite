@@ -46,15 +46,27 @@ async function bootstrap() {
     });
   });
   
-  // Auto-seed database on startup (only if empty)
-  console.log('🌱 Starting database seed check...');
+  // Run migrations and seed database on startup
   try {
     const dataSource = app.get<DataSource>(getDataSourceToken());
-    console.log('✅ DataSource obtained, running seed...');
+    
+    // Run pending migrations
+    console.log('🔄 Running database migrations...');
+    const pendingMigrations = await dataSource.showMigrations();
+    if (pendingMigrations) {
+      console.log('📝 Pending migrations found, executing...');
+      await dataSource.runMigrations();
+      console.log('✅ Migrations completed');
+    } else {
+      console.log('✅ No pending migrations');
+    }
+    
+    // Auto-seed database (only if empty)
+    console.log('🌱 Starting database seed check...');
     await seedDatabase(dataSource);
     console.log('✅ Seed check completed');
   } catch (error) {
-    console.error('❌ SEED ERROR:', error);
+    console.error('❌ STARTUP ERROR:', error);
     console.error('Error stack:', error instanceof Error ? error.stack : 'No stack');
     // Continue anyway - server should still start
   }

@@ -5,6 +5,7 @@ import { Team } from './entities/team.entity';
 import { Driver } from './entities/driver.entity';
 import { DiecastModel } from './entities/diecast-model.entity';
 import { WatchlistItem } from './watchlist/entities/watchlist-item.entity';
+import { Customer } from './entities/customer.entity';
 
 // Support both DATABASE_URL (Render) and individual vars (local)
 const dataSourceConfig = process.env.DATABASE_URL
@@ -26,8 +27,9 @@ const dataSourceConfig = process.env.DATABASE_URL
 
 export const AppDataSource = new DataSource({
 	...dataSourceConfig,
-	entities: [User, Team, Driver, DiecastModel, WatchlistItem],
-	migrations: ['src/migrations/*.ts'],
+	entities: [User, Team, Driver, DiecastModel, WatchlistItem, Customer],
+	// Support both .ts (dev) and .js (production)
+	migrations: [__dirname + '/migrations/*.{ts,js}'],
 	synchronize: false,
 	logging: false,
 });
