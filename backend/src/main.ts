@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { join } from 'node:path';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
@@ -8,8 +9,41 @@ import { ensureDirSync } from './utils/fs';
 import { getDataSourceToken } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { seedDatabase } from './scripts/seed-on-startup';
+import { AppDataSource } from './data-source';
 
 async function bootstrap() {
+  // Initialize standalone DataSource BEFORE NestJS app
+  console.log('🔌 Initializing standalone DataSource...');
+  try {
+    await AppDataSource.initialize();
+    console.log('✅ DataSource initialized');
+    
+    // Run pending migrations
+    console.log('🔄 Running database migrations...');
+    const pendingMigrations = await AppDataSource.showMigrations();
+    if (pendingMigrations) {
+      console.log('📝 Pending migrations found, executing...');
+      await AppDataSource.runMigrations();
+      console.log('✅ Migrations completed');
+    } else {
+      console.log('✅ No pending migrations');
+    }
+    
+    // Seed database
+    console.log('🌱 Starting database seed check...');
+    await seedDatabase(AppDataSource);
+    console.log('✅ Seed check completed');
+    
+    // Close standalone connection (NestJS will create its own)
+    await AppDataSource.destroy();
+    console.log('✅ Standalone DataSource closed');
+  } catch (error) {
+    console.error('❌ STARTUP ERROR:', error);
+    console.error('Error stack:', error instanceof Error ? error.stack : 'No stack');
+    // Continue anyway - server should still start
+  }
+  
+  // Now create NestJS app
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     cors: {
       origin: true,
@@ -45,31 +79,6 @@ async function bootstrap() {
       },
     });
   });
-  
-  // Run migrations and seed database on startup
-  try {
-    const dataSource = app.get<DataSource>(getDataSourceToken());
-    
-    // Run pending migrations
-    console.log('🔄 Running database migrations...');
-    const pendingMigrations = await dataSource.showMigrations();
-    if (pendingMigrations) {
-      console.log('📝 Pending migrations found, executing...');
-      await dataSource.runMigrations();
-      console.log('✅ Migrations completed');
-    } else {
-      console.log('✅ No pending migrations');
-    }
-    
-    // Auto-seed database (only if empty)
-    console.log('🌱 Starting database seed check...');
-    await seedDatabase(dataSource);
-    console.log('✅ Seed check completed');
-  } catch (error) {
-    console.error('❌ STARTUP ERROR:', error);
-    console.error('Error stack:', error instanceof Error ? error.stack : 'No stack');
-    // Continue anyway - server should still start
-  }
   
   await app.listen(port, '0.0.0.0');
   console.log(`🚀 Server is running on port ${port}`);
