@@ -27,10 +27,19 @@ function csvPath(): string {
 }
 
 export async function seedDatabase(dataSource: DataSource): Promise<void> {
+	console.log('🔍 Checking database state...');
 	try {
+		// Ensure dataSource is initialized
+		if (!dataSource.isInitialized) {
+			console.log('⚠️ DataSource not initialized, initializing...');
+			await dataSource.initialize();
+		}
+		
 		const dmRepo = dataSource.getRepository(DiecastModel);
 		const teamRepo = dataSource.getRepository(Team);
 		const userRepo = dataSource.getRepository(User);
+		
+		console.log('✅ Repositories obtained');
 
 		// Check if already seeded
 		const modelCount = await dmRepo.count();
@@ -139,7 +148,10 @@ export async function seedDatabase(dataSource: DataSource): Promise<void> {
 		const finalUserCount = await userRepo.count();
 		console.log(`✅ Database seeded: ${finalModelCount} models, ${finalUserCount} users`);
 	} catch (error) {
-		console.error('❌ Error during seeding:', error);
+		console.error('❌ ERROR during seeding:');
+		console.error('Error message:', error instanceof Error ? error.message : String(error));
+		console.error('Error stack:', error instanceof Error ? error.stack : 'No stack');
+		console.error('Full error:', error);
 		// Don't throw - let server start anyway
 	}
 }

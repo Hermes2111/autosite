@@ -47,11 +47,16 @@ async function bootstrap() {
   });
   
   // Auto-seed database on startup (only if empty)
+  console.log('🌱 Starting database seed check...');
   try {
     const dataSource = app.get<DataSource>(getDataSourceToken());
+    console.log('✅ DataSource obtained, running seed...');
     await seedDatabase(dataSource);
+    console.log('✅ Seed check completed');
   } catch (error) {
-    console.warn('⚠️  Could not auto-seed database:', error);
+    console.error('❌ SEED ERROR:', error);
+    console.error('Error stack:', error instanceof Error ? error.stack : 'No stack');
+    // Continue anyway - server should still start
   }
   
   await app.listen(port, '0.0.0.0');
