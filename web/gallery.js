@@ -45,9 +45,12 @@ export function setAuthGetter(fn) {
 export async function fetchModels() {
   try {
     const response = await apiClient.get('/diecast-models');
+    console.log('API response:', response);
     allModels = response?.items ?? [];
+    console.log(`Loaded ${allModels.length} models`);
     return allModels;
   } catch (error) {
+    console.error('Error fetching models:', error);
     allModels = [];
     throw error;
   }
@@ -62,8 +65,11 @@ async function fetchWatchlist() {
 
   try {
     const items = await apiClient.get('/watchlist');
-    watchlist = new Set(items.map(item => item.model.id));
+    // Handle both array response and object with items property
+    const watchlistItems = Array.isArray(items) ? items : (items?.items || []);
+    watchlist = new Set(watchlistItems.map(item => item.model?.id || item.id).filter(Boolean));
   } catch (err) {
+    console.warn('Could not fetch watchlist:', err);
     watchlist = new Set();
   }
 }
