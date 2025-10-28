@@ -75,7 +75,9 @@ async function fetchWatchlist() {
 }
 
 export async function renderModels() {
+  console.log('renderModels called');
   if (!loadingElement || !collectionContainer) {
+    console.error('Missing elements:', { loadingElement, collectionContainer });
     return;
   }
   
@@ -83,13 +85,19 @@ export async function renderModels() {
   collectionContainer.innerHTML = '';
   
   try {
+    console.log('Fetching models...');
     await fetchModels();
+    console.log('Fetching watchlist...');
     await fetchWatchlist();
     filteredModels = [...allModels];
+    console.log('Updating filters and statistics...');
     updateFilters();
     updateStatistics(filteredModels);
+    console.log('Drawing cards...');
     drawCards(filteredModels);
+    console.log('Render complete');
   } catch (error) {
+    console.error('Render error:', error);
     const apiBase = apiClient.baseUrl;
     collectionContainer.innerHTML = `
       <div style="grid-column: 1 / -1; text-align: center; padding: 64px 24px;">
@@ -104,7 +112,10 @@ export async function renderModels() {
       </div>
     `;
   } finally {
-    loadingElement.style.display = 'none';
+    console.log('Hiding loading element');
+    if (loadingElement) {
+      loadingElement.style.display = 'none';
+    }
   }
 }
 
