@@ -33,6 +33,19 @@ async function bootstrap() {
     prefix: '/uploads',
   });
   
+  // Root endpoint
+  app.getHttpAdapter().get('/', (req, res) => {
+    res.json({
+      message: 'Autosite API',
+      version: '1.0.0',
+      endpoints: {
+        health: '/api/health',
+        models: '/api/diecast-models',
+        auth: '/api/auth',
+      },
+    });
+  });
+  
   // Auto-seed database on startup (only if empty)
   try {
     const dataSource = app.get<DataSource>(getDataSourceToken());
