@@ -34,7 +34,7 @@ async function bootstrap() {
   });
   
   // Root endpoint
-  app.getHttpAdapter().get('/', (req, res) => {
+  app.getHttpAdapter().get('/', (req: any, res: any) => {
     res.json({
       message: 'Autosite API',
       version: '1.0.0',
