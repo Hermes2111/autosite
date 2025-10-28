@@ -35,6 +35,45 @@ export async function seedDatabase(dataSource: DataSource): Promise<void> {
 			await dataSource.initialize();
 		}
 		
+		// FIX DATABASE SCHEMA FIRST - handle password column issue
+		console.log('🔧 Fixing database schema...');
+		try {
+			// Check if password column exists and rename/drop it
+			await dataSource.query(`
+				DO $$ 
+				BEGIN
+					-- If password column exists but password_hash doesn't, rename it
+					IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='users' AND column_name='password') 
+					   AND NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='users' AND column_name='password_hash') THEN
+						ALTER TABLE "users" RENAME COLUMN "password" TO "password_hash";
+						RAISE NOTICE 'Renamed password to password_hash';
+					END IF;
+					
+					-- If password_hash doesn't exist, add it
+					IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='users' AND column_name='password_hash') THEN
+						ALTER TABLE "users" ADD COLUMN "password_hash" VARCHAR;
+						RAISE NOTICE 'Added password_hash column';
+					END IF;
+					
+					-- If both password and password_hash exist, drop password
+					IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='users' AND column_name='password') 
+					   AND EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='users' AND column_name='password_hash') THEN
+						ALTER TABLE "users" DROP COLUMN "password";
+						RAISE NOTICE 'Dropped old password column';
+					END IF;
+					
+					-- Add roles column if missing
+					IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='users' AND column_name='roles') THEN
+						ALTER TABLE "users" ADD COLUMN "roles" VARCHAR[] DEFAULT '{user}';
+						RAISE NOTICE 'Added roles column';
+					END IF;
+				END $$;
+			`);
+			console.log('✅ Database schema fixed');
+		} catch (schemaError) {
+			console.error('⚠️  Schema fix error (continuing anyway):', schemaError instanceof Error ? schemaError.message : String(schemaError));
+		}
+		
 		const dmRepo = dataSource.getRepository(DiecastModel);
 		const teamRepo = dataSource.getRepository(Team);
 		const userRepo = dataSource.getRepository(User);
