@@ -10,17 +10,17 @@ services:
     envVars:
       - key: API_URL
         fromService:
+          type: web
           name: autosite-api
+          property: url
 
-  # 🗄️ Database - PostgreSQL
-  - type: pserv
+  # 🗄️ Database - PostgreSQL (Render beheert dit automatisch)
+  - type: database
     name: autosite-db
     plan: free
     region: oregon
-    ipAllowList: [] # Enkel interne verbindingen
-    disk:
-      name: ps-disk
-      sizeGB: 10
+    databaseName: autosite
+    user: autosite_user
 
   # ⚙️ Backend - Node.js API
   - type: web
