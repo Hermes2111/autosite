@@ -1,6 +1,6 @@
 services:
   # 🌐 Frontend - Statische site
-  - type: static_site
+  - type: web
     name: autosite-frontend
     rootDir: frontend
     buildCommand: pnpm install && pnpm run build
