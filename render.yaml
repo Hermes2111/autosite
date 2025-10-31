@@ -1,41 +1,45 @@
 services:
-  # Een statische site voor gebruikers (de frontend)
+  # 🌐 Frontend - Statische site
   - type: static_site
     name: autosite-frontend
-    env: static
-    rootDir: .
-    # Stelt de omgeving in voor pnpm, wat nodig kan zijn voor statische assets.
-    buildCommand: pnpm install --store=node_modules/.pnpm --production=false
-    staticPublishPath: .
+    rootDir: frontend
+    buildCommand: pnpm install && pnpm run build
+    staticPublishPath: dist
     pullRequestPreviewsEnabled: true
     envVars:
-      # Haalt de API URL automatisch op van de backend service
       - key: API_URL
         fromService: autosite-api
-  
-  # Een privé PostgreSQL database
+
+  # 🗄️ Database - PostgreSQL
   - type: pserv
     name: autosite-db
-    region: oregon # Render raadt aan een vaste regio in te stellen
-    ipAllowList: [] # Laat enkel interne verbindingen toe
     plan: free
+    region: oregon
+    ipAllowList: [] # Enkel interne verbindingen
     disk:
-      size: 10 # GB
       name: ps-disk
+      sizeGB: 10
 
-  # Een Node.js web service voor de API (de backend)
+  # ⚙️ Backend - Node.js API
   - type: web
     name: autosite-api
     rootDir: backend
     env: node
-    port: 3000
     plan: free
     numInstances: 1
-    # De complexe shell-opdracht is correct tussen dubbele aanhalingstekens geplaatst.
-    buildCommand: "cd backend && npm install && npm run build && (test -f collection.csv && cp collection.csv dist/ || test -f ../collection.csv && cp ../collection.csv dist/ || echo \"Warning: collection.csv not found\")"
+    port: 3000
+    buildCommand: |
+      npm install
+      npm run build
+      if [ -f collection.csv ]; then
+        cp collection.csv dist/
+      elif [ -f ../collection.csv ]; then
+        cp ../collection.csv dist/
+      else
+        echo "Warning: collection.csv not found"
+      fi
     startCommand: node dist/main.js
     envVars:
-      # Koppelt de backend automatisch aan de database
       - key: DATABASE_URL
         fromDatabase: autosite-db
         type: connectionString
@@ -44,4 +48,4 @@ services:
       - key: PORT
         value: 3000
       - key: JWT_SECRET
-        generateValue: true # Genereert automatisch een beveiligde sleutel
+        generateValue: true
