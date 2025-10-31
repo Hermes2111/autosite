@@ -9,7 +9,8 @@ services:
     pullRequestPreviewsEnabled: true
     envVars:
       - key: API_URL
-        fromService: autosite-api
+        fromService:
+          name: autosite-api
 
   # 🗄️ Database - PostgreSQL
   - type: pserv
@@ -28,7 +29,6 @@ services:
     env: node
     plan: free
     numInstances: 1
-    port: 3000
     buildCommand: |
       npm install
       npm run build
@@ -42,8 +42,9 @@ services:
     startCommand: node dist/main.js
     envVars:
       - key: DATABASE_URL
-        fromDatabase: autosite-db
-        type: connectionString
+        fromDatabase:
+          name: autosite-db
+          property: connectionString
       - key: NODE_ENV
         value: production
       - key: PORT
