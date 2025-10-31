@@ -1,58 +1,47 @@
-# Een "Blueprint" definieert hoe Render al uw services moet opzetten.
-# Deze is geconfigureerd voor de F1 Diecast Collectie applicatie:
-# 1. autosite-db: PostgreSQL Database
-# 2. autosite-api: Backend (Web Service)
-# 3. autosite-frontend: Frontend (Static Site)
-
-# Instellingen voor uw PostgreSQL Database
-databases:
-  - name: autosite-db
-    databaseName: diecast_db
-    user: diecast_user
-
-# Instellingen voor uw Backend API
 services:
+  # Een statische site voor gebruikers (de frontend)
+  - type: static
+    name: autosite-frontend
+    env: static
+    rootDir: .
+    # Stelt de omgeving in voor pnpm, wat nodig kan zijn voor statische assets.
+    buildCommand: pnpm install --store=node_modules/.pnpm --production=false
+    staticPublishPath: .
+    pullRequestPreviewsEnabled: true
+    envVars:
+      # Haalt de API URL automatisch op van de backend service
+      - key: API_URL
+        fromService: autosite-api
+  
+  # Een privé PostgreSQL database
+  - type: pserv
+    name: autosite-db
+    region: oregon # Render raadt aan een vaste regio in te stellen
+    ipAllowList: [] # Laat enkel interne verbindingen toe
+    plan: free
+    disk:
+      size: 10 # GB
+      name: ps-disk
+
+  # Een Node.js web service voor de API (de backend)
   - type: web
     name: autosite-api
-    # Locatie van de backend-code binnen de repository
     rootDir: backend
-    # Omgevingsvariabelen voor Node.js
     env: node
-    # Externe poort voor Render
     port: 3000
-    # De build-opdracht om de code te compileren en het CSV-bestand te kopiëren
-    buildCommand: cd backend && npm install && npm run build && (test -f collection.csv && cp collection.csv dist/ || test -f ../collection.csv && cp ../collection.csv dist/ || echo "Warning: collection.csv not found")
-    # De start-opdracht
+    plan: free
+    numInstances: 1
+    # De complexe shell-opdracht is correct tussen dubbele aanhalingstekens geplaatst.
+    buildCommand: "cd backend && npm install && npm run build && (test -f collection.csv && cp collection.csv dist/ || test -f ../collection.csv && cp ../collection.csv dist/ || echo \"Warning: collection.csv not found\")"
     startCommand: node dist/main.js
-    # Definieer de databaseverbinding
     envVars:
+      # Koppelt de backend automatisch aan de database
       - key: DATABASE_URL
         fromDatabase: autosite-db
-        property: connectionString
+        type: connectionString
       - key: NODE_ENV
         value: production
       - key: PORT
         value: 3000
       - key: JWT_SECRET
-        generateValue: true
-      # Voeg API_URL toe voor de frontend om mee te verbinden
-      - key: API_URL
-        value: https://autosite-api.onrender.com
-    # Gezondheidscheck voor de service
-    healthCheckPath: /api/health
-
-# Instellingen voor uw Frontend Website
-  - type: static
-    name: autosite-frontend
-    # De rootDir moet de map zijn met de statische bestanden (index.html, web/, etc.)
-    rootDir: .
-    # Het bestand dat als root moet dienen
-    staticPublishPath: .
-    # Build command for the frontend (dit is puur statisch, dus er is geen specifieke build nodig, maar we kunnen een waarschuwing toevoegen als bestanden niet gevonden worden)
-    buildCommand: echo "Frontend build is statisch, geen commando nodig."
-    # Voeg omgevingsvariabele toe zodat de frontend weet waar de API draait
-    envVars:
-      # Stel de API_URL in voor de client-side JavaScript
-      - key: API_URL
-        fromService: autosite-api
-        property: host
+        generateValue: true # Genereert automatisch een beveiligde sleutel
