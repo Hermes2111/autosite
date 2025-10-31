@@ -9,17 +9,23 @@ services:
     pullRequestPreviewsEnabled: true
     envVars:
       - key: API_URL
-        fromService:
-          type: web
-          name: autosite-api
-          property: url
+        value: https://autosite-api.onrender.com  # ← vul hier je backend-URL in zodra gedeployed
 
-  # 🗄️ Database - PostgreSQL via private service
+  # 🗄️ Database - PostgreSQL via Docker image
   - type: pserv
     name: autosite-db
-    env: postgres
+    env: docker
     plan: free
     region: oregon
+    image: postgres:14
+    envVars:
+      - key: POSTGRES_DB
+        value: autosite
+      - key: POSTGRES_USER
+        value: autosite_user
+      - key: POSTGRES_PASSWORD
+        generateValue: true
+    startCommand: docker-entrypoint.sh postgres
 
   # ⚙️ Backend - Node.js API
   - type: web
@@ -41,9 +47,7 @@ services:
     startCommand: node dist/main.js
     envVars:
       - key: DATABASE_URL
-        fromDatabase:
-          name: autosite-db
-          property: connectionString
+        value: postgres://autosite_user:${POSTGRES_PASSWORD}@autosite-db:5432/autosite
       - key: NODE_ENV
         value: production
       - key: PORT
