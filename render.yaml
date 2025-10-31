@@ -1,6 +1,6 @@
 services:
   # Een statische site voor gebruikers (de frontend)
-  - type: static
+  - type: static_site
     name: autosite-frontend
     env: static
     rootDir: .
