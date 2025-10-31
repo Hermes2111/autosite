@@ -14,13 +14,12 @@ services:
           name: autosite-api
           property: url
 
-  # 🗄️ Database - PostgreSQL (Render beheert dit automatisch)
-  - type: database
+  # 🗄️ Database - PostgreSQL via private service
+  - type: pserv
     name: autosite-db
+    env: postgres
     plan: free
     region: oregon
-    databaseName: autosite
-    user: autosite_user
 
   # ⚙️ Backend - Node.js API
   - type: web
